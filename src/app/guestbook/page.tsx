@@ -7,6 +7,19 @@ import { useSquareText } from "@/components/useSquareText";
 
 const MAX_LINES = 8;   // 한 칸 최대 줄 수 (넘으면 …)
 const MAX_CHARS = 300; // 한 사람이 쓸 수 있는 최대 글자 수
+const TYPE_SPEED = 0.035; // 글자 하나 써지는 간격(초)
+const CELL_GAP = 0.45;    // 칸과 칸 사이 시작 간격(초)
+
+/** 글자가 한 자씩 써지는 칸 */
+function Typed({ text, start }: { text: string; start: number }) {
+  return (
+    <>
+      {Array.from(text).map((ch, j) => (
+        <span key={j} className="ch" style={{ animationDelay: `${(start + j * TYPE_SPEED).toFixed(3)}s` }}>{ch}</span>
+      ))}
+    </>
+  );
+}
 
 /* Supabase 연결 전 미리보기용 예시 글 */
 const DEMO: Entry[] = [30, 70, 80, 72, 40, 70, 30, 75, 70, 80, 22, 70].map((n, i) => ({
@@ -19,6 +32,7 @@ export default function Guestbook() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [writing, setWriting] = useState(false);
   const [reading, setReading] = useState<Entry | null>(null);
+  const [newIds, setNewIds] = useState<Set<number>>(new Set()); // 방금 쓴 글은 바로 써지게
 
   const load = useCallback(async () => {
     if (!supabase) return setEntries(DEMO);
@@ -50,7 +64,9 @@ export default function Guestbook() {
         <section className="gb-grid" style={{ opacity: ready ? 1 : 0 }}>
           {entries.map((e, i) => (
             <button key={e.id} className="cell" onClick={() => setReading(e)}>
-              <p className="sq">{out[i] ?? e.message}</p>
+              <p className="sq">
+                {ready && <Typed text={out[i] ?? e.message} start={newIds.has(e.id) ? 0.2 : i * CELL_GAP} />}
+              </p>
             </button>
           ))}
           {/* 마지막 줄이 3칸이 안 되면 빈 칸으로 채워서 격자 유지 */}
@@ -72,7 +88,7 @@ export default function Guestbook() {
       {writing && (
         <WriteSheet
           onClose={() => setWriting(false)}
-          onSent={(e) => { setEntries((prev) => [e, ...prev]); setWriting(false); }}
+          onSent={(e) => { setNewIds((p) => new Set(p).add(e.id)); setEntries((prev) => [e, ...prev]); setWriting(false); }}
         />
       )}
 
@@ -104,6 +120,8 @@ export default function Guestbook() {
         .sq { width: 100px; font-size: 12px; line-height: 16px; opacity: .8;
               text-align: justify; text-align-last: justify;
               word-break: break-all; overflow-wrap: anywhere; white-space: normal; }
+        .ch { opacity: 0; animation: ch .12s ease forwards; }
+        @keyframes ch { to { opacity: 1 } }
         .measure { position: absolute; left: 0; top: 0; visibility: hidden; pointer-events: none; height: auto; }
 
         .gb-btn { position: fixed; left: 50%; bottom: 44px; transform: translateX(-50%);

@@ -12,7 +12,7 @@ export default function Home() {
       <section className="grid">
         {works.map((f, i) => (
           // eslint-disable-next-line @next/next/no-img-element
-          <img key={f} src={`/works/${f}`} alt="" decoding="async" style={{ animationDelay: `${0.3 + i * STEP}s` }} />
+          <img key={f} src={`/img/works/${f}`} alt="" decoding="async" style={{ animationDelay: `${0.3 + i * STEP}s` }} />
         ))}
       </section>
 

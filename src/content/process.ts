@@ -4,7 +4,7 @@
  * 한 페이지 = 섹션 목록(섹션 사이 40px), 섹션 = 블록 목록(블록 사이 14px)
  *  step     : 단계 제목. no=번호, [[밑줄]] / \n 줄바꿈. size 16 이면 작은 단계(10~14)
  *  note     : 'ㄴ' 회색 설명 (indent: 왼쪽 들여쓰기 px)
- *  img      : 피그마 이미지 레이어 id → /public/process/<id의 :를 -로>.png. w×h 는 피그마 크기
+ *  img      : 피그마 이미지 레이어 id → /public/img/process/<id의 :를 -로>.png. w×h 는 피그마 크기
  *  row      : 이미지 여러 장 가로 배치
  *  text     : 본문 16px. 문단은 \n\n 로 구분, 문단 앞에 ">>" 붙이면 초록 문단
  *  small    : ※ 회색 작은 글씨 (size 12 또는 15)
@@ -13,7 +13,7 @@
  *  caption  : 가운데 정렬 작은 설명
  */
 export type Img = { id: string; w: number; h: number };
-export type Block =
+type B =
   | { type: "step"; no: number; title: string; size?: 19 | 16 }
   | { type: "note"; text: string; indent?: number }
   | { type: "img"; img: Img; align?: "left" | "center" | "right" }
@@ -23,7 +23,10 @@ export type Block =
   | { type: "sub"; items: [string, string][] }
   | { type: "contra"; title: string; text: string }
   | { type: "caption"; text: string };
-export type Section = { blocks: Block[]; gap?: number };
+/** mt: 이 블록 위쪽 간격(px)을 직접 지정 */
+export type Block = B & { mt?: number };
+export type Section = { blocks: Block[]; gap?: number; inner?: number };
+/** 블록 앞 간격 기본값(피그마): ㄴ주석 2, ※작은글 8, 세부단계 8, 그 외는 섹션 inner(기본 14) */
 
 export const processPages: Section[][] = [
   // ───────────────────────── 과정 1 ─────────────────────────
@@ -42,7 +45,7 @@ export const processPages: Section[][] = [
     ]},
     { blocks: [
       { type: "step", no: 3, title: "안료를 섞은 흙물을\n석고판에 붓는다." },
-      { type: "small", size: 15, text: "※ 너무 과하게 마르지 않도록 주의한다.\n적당히 말랑할 때, 떼서 비닐에 보관한다." },
+      { type: "small", size: 15, mt: 2, text: "※ 너무 과하게 마르지 않도록 주의한다.\n적당히 말랑할 때, 떼서 비닐에 보관한다." },
       { type: "img", img: { id: "1:55", w: 175, h: 131 }, align: "left" },
     ]},
     { blocks: [
@@ -69,15 +72,16 @@ export const processPages: Section[][] = [
     { blocks: [
       { type: "step", no: 6, title: "공기를 차단하기 위해\n비닐봉지에 보관한다." },
       { type: "img", img: { id: "1:95", w: 350, h: 217 } },
-      { type: "text", text: "색슬립 패치 한 개를 제작하는 데 시간이 꽤 소요되기 때문에, 여러 개의 패치를 제작하는 동안 먼저 만든 패치가 마르지 않도록 주의한다.\n\n>>모든 패치를 최대한 말랑하고 유연한 상태로 유지하는 것이 중요하며, 각 패치의 건조 상태를 비슷하게 유지하면 접합 후 수축률 차이로 인해 발생하는 균열도 나아질 것이라 판단했다." },
+      { type: "text", text: "색슬립 패치 한 개를 제작하는 데 시간이 꽤 소요되기 때문에, 여러 개의 패치를 제작하는 동안 먼저 만든 패치가 마르지 않도록 주의한다." },
+      { type: "text", text: ">>모든 패치를 최대한 말랑하고 유연한 상태로 유지하는 것이 중요하며, 각 패치의 건조 상태를 비슷하게 유지하면 접합 후 수축률 차이로 인해 발생하는 균열도 나아질 것이라 판단했다." },
     ]},
     { blocks: [
       { type: "step", no: 6, title: "[[석고틀]]*을 위한 틀을 만든다." },
       { type: "note", text: "ㄴ 물과 섞어 굳힌 석고로 만든 성형용 몰드" },
       { type: "img", img: { id: "1:107", w: 350, h: 74 } },
-      { type: "row", gap: 6, imgs: [{ id: "1:109", w: 126, h: 99 }, { id: "1:110", w: 217, h: 99 }], align: "left" },
+      { type: "row", gap: 6, mt: 6, imgs: [{ id: "1:109", w: 126, h: 99 }, { id: "1:110", w: 217, h: 99 }], align: "left" },
       { type: "text", text: "석고틀을 만들기 위한 틀을 3D 모델링하고, 3D 프린팅으로 출력한다." },
-      { type: "small", text: "여러 몰드를 뽑았지만, 곡률이 있는 틀은 패치들을 강하게 압착하기 어려울 것이라는 교수님의 권유로 인해 사용하지 않게 된다." },
+      { type: "small", mt: 2, text: "여러 몰드를 뽑았지만, 곡률이 있는 틀은 패치들을 강하게 압착하기 어려울 것이라는 교수님의 권유로 인해 사용하지 않게 된다." },
     ]},
     { blocks: [
       { type: "step", no: 7, title: "석고틀을 만든다." },
@@ -102,22 +106,22 @@ export const processPages: Section[][] = [
       { type: "step", no: 9, title: "[[압착]]¹한다." },
       { type: "img", img: { id: "1:160", w: 350, h: 447 } },
       { type: "step", no: 10, size: 16, title: "깨끗한 슬립을 몰드에 붓는다." },
-      { type: "step", no: 11, size: 16, title: "원하는 두께의 기벽이 형성될 때까지 기다린 후, 남은 슬립을 따라낸다." },
-      { type: "step", no: 12, size: 16, title: "몰드를 거꾸로 뒤집어 중력에 의해 내부에 남아 있는 슬립이 자연스럽게 흘러나오도록 한다." },
-      { type: "img", img: { id: "1:166", w: 130, h: 130 }, align: "right" },
+      { type: "step", no: 11, size: 16, mt: 8, title: "원하는 두께의 기벽이 형성될 때까지 기다린 후, 남은 슬립을 따라낸다." },
+      { type: "step", no: 12, size: 16, mt: 8, title: "몰드를 거꾸로 뒤집어 중력에 의해 내부에 남아 있는 슬립이 자연스럽게 흘러나오도록 한다." },
+      { type: "img", img: { id: "1:166", w: 130, h: 130 }, align: "right", mt: 30 },
     ]},
-    { blocks: [
+    { inner: 8, blocks: [
       { type: "step", no: 13, size: 16, title: "손으로 색슬립 패치를 한 번 더 [[압착]]²한다." },
       { type: "row", gap: 9, imgs: [{ id: "1:170", w: 183, h: 152 }, { id: "1:171", w: 158, h: 152 }], align: "left" },
       { type: "step", no: 14, size: 16, title: "전동 물레판에 기핀 그립을 부착하여 또 [[압착]]³한다." },
       { type: "text", size: 15, indent: 32, text: "물레를 회전시키며 도구와 손을 이용해 패치 사이의 접합부를 꼼꼼하게 압착한다.\n\n>>반복해서 압착하는 이유는 단 하나, 균열이 발생할 가능성을 조금이라도 줄이기 위해서다. 하지만 이 과정을 거친다고 해서 균열이 발생하지 않는다고 장담할 수는 없다. 웬만하면 조금 더 수월하고 평범한 기법으로 기물을 제작하기를 권장한다…" },
-      { type: "img", img: { id: "1:178", w: 150, h: 150 }, align: "left" },
+      { type: "img", img: { id: "1:178", w: 150, h: 150 }, align: "left", mt: 18 },
     ]},
-    { blocks: [
-      { type: "step", no: 16, title: "1차 건조한다." },
+    { inner: 10, blocks: [
+      { type: "step", no: 15, title: "1차 건조한다." },
       { type: "text", indent: 12, text: "기물을 적당히 건조시킨다. 완전히 건조되면 굽을 깎기 어려우므로, 형태가 변형되지 않으면서도 굽을 깎을 수 있을 정도의 수분이 남아 있도록 건조 상태를 수시로 확인해야 한다." },
-      { type: "small", size: 15, text: "※ 갈라짐을 방지하기 위해 최대한 천천히 건조한다. 기물 하나에 비닐봉지에 담아서 며칠 건조시킨 뒤에는, 큰 김장봉투 안에 다 같이 넣어서 보관했다." },
-      { type: "contra", title: "모순 2", text: "제작한 기법이 소성에서 안전한지 확인하려면 빨리 가마에 넣어 테스트해야 했다. 하지만 균열이 발생할 가능성을 줄이기 위해서는 충분한 건조 시간을 확보해야 했다." },
+      { type: "small", size: 15, mt: 10, text: "※ 갈라짐을 방지하기 위해 최대한 천천히 건조한다. 기물 하나에 비닐봉지에 담아서 며칠 건조시킨 뒤에는, 큰 김장봉투 안에 다 같이 넣어서 보관했다." },
+      { type: "contra", mt: 80, title: "모순 2", text: "제작한 기법이 소성에서 안전한지 확인하려면 빨리 가마에 넣어 테스트해야 했다. 하지만 균열이 발생할 가능성을 줄이기 위해서는 충분한 건조 시간을 확보해야 했다." },
       { type: "caption", text: "1차 소성 전\n건조 과정에서 갈라진 친구들" },
       { type: "img", img: { id: "1:192", w: 350, h: 271 } },
     ]},
@@ -134,21 +138,21 @@ export const processPages: Section[][] = [
     ]},
     { blocks: [
       { type: "step", no: 18, title: "완전히 건조시킨다." },
-      { type: "step", no: 19, title: "가마 온도 800~900℃ 에서\n1차 소성을 한다." },
+      { type: "step", no: 19, mt: 0, title: "가마 온도 800~900℃ 에서\n1차 소성을 한다." },
       { type: "img", img: { id: "1:224", w: 350, h: 180 } },
     ]},
     { blocks: [
       { type: "step", no: 20, title: "[[시유]]* 준비를 한다." },
       { type: "note", text: "ㄴ 초벌을 마친 도자기 표면에 유리질의 액체인 [[유약]]*을 입히는 과정" },
-      { type: "note", indent: 132, text: "ㄴ 고온에 녹아 얇은 유리막을\n형성하는 광물성 분말 혼합물" },
+      { type: "note", indent: 132, mt: 2, text: "ㄴ 고온에 녹아 얇은 유리막을\n형성하는 광물성 분말 혼합물" },
       { type: "text", text: ">>유약을 바르는 이유는 방수성과 내구성을 높이고, 색상과 광택 등 심미적 효과를 더하기 위해서다. 다만 충분히 소성되어 치밀해진 백자는 흡수율이 낮기 때문에, 작품의 의도에 따라 흙 본연의 색감과 질감을 살리고자 유약을 생략하기도 한다.\n\n기물의 안쪽에만 유약을 바르기 위해 내부에 유약을 채운 뒤 따라냈다. 이때 유약을 바르지 않을 외벽에 유약이 묻지 않도록 미리 테이핑 작업을 진행했다." },
     ]},
     { blocks: [
       { type: "step", no: 21, title: "2차 소성을 한다." },
-      { type: "text", text: "유약을 바른 기물을 가마에서 다시 1250~1280℃ 로 구운다." },
-      { type: "step", no: 22, title: "다듬는다." },
-      { type: "text", text: "가마에서 나온 기물을 사포로 간다." },
-      { type: "step", no: 23, title: "완성 ⊹ :*" },
+      { type: "text", mt: 4, text: "유약을 바른 기물을 가마에서 다시 1250~1280℃ 로 구운다." },
+      { type: "step", no: 22, mt: 12, title: "다듬는다." },
+      { type: "text", mt: 2, text: "가마에서 나온 기물을 사포로 간다." },
+      { type: "step", no: 23, mt: 16, title: "완성 ⊹ :*" },
     ]},
   ],
 ];

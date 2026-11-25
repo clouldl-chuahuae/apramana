@@ -19,7 +19,8 @@ function rich(s: string) {
   ));
 }
 
-const src = (i: Img) => `/process/${i.id.replace(":", "-")}.jpg`;
+const src = (i: Img) => `/img/process/${i.id.replace(":", "-")}.jpg`;
+const DEFAULT_MT: Partial<Record<Block["type"], number>> = { note: 2, small: 8, sub: 8 };
 const justify = { left: "flex-start", center: "center", right: "flex-end" } as const;
 
 function render(b: Block, i: number) {
@@ -93,7 +94,11 @@ export default async function ProcessPage({ params }: { params: Promise<{ step: 
       <article className="pc">
         {sections.map((s, si) => (
           <section key={si} className="sec" style={s.gap ? { marginTop: s.gap } : undefined}>
-            {s.blocks.map(render)}
+            {s.blocks.map((b, bi) => {
+              const inner = s.inner ?? 14;
+              const mt = bi === 0 ? 0 : b.mt ?? DEFAULT_MT[b.type] ?? inner;
+              return <div key={bi} style={{ marginTop: mt }}>{render(b, bi)}</div>;
+            })}
           </section>
         ))}
 
@@ -107,24 +112,23 @@ export default async function ProcessPage({ params }: { params: Promise<{ step: 
 
       <style>{`
         .pc { padding: 16px 20px 80px; }
-        .sec { display: flex; flex-direction: column; gap: 14px; }
+        .sec { display: flex; flex-direction: column; }
         .sec + .sec { margin-top: 40px; }
 
         .st { display: flex; gap: 10px; font-weight: 400; font-size: 19px; line-height: 30px; }
         .st > span:first-child { min-width: 18.5px; }
         .st16 { display: flex; gap: 8px; font-size: 16px; line-height: 24px; text-align: justify; padding-right: 50px; }
         .st16 > span:first-child { min-width: 16px; }
-        .st + .note { margin-top: -12px; }
         .note { font-size: 15px; line-height: 24px; opacity: .4; text-align: justify; }
 
         .imgs { display: flex; }
         .tx { line-height: 24px; text-align: justify; opacity: .8; }
         .tx p + p { margin-top: 24px; }
         .tx .accent { color: var(--accent); }
-        .small { font-size: 12px; line-height: 20px; opacity: .4; margin-top: -6px; }
+        .small { font-size: 12px; line-height: 20px; opacity: .4; }
 
         .sub { list-style: none; padding: 0 74px 0 30px; display: flex; flex-direction: column; gap: 6px;
-               font-size: 12px; line-height: 20px; opacity: .4; text-align: justify; margin-top: -6px; }
+               font-size: 12px; line-height: 20px; opacity: .4; text-align: justify; }
         .sub li { display: flex; gap: 10px; }
         .sub li span:first-child { white-space: nowrap; }
 

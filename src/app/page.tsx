@@ -9,12 +9,13 @@ import Wave, { WAVE_ONBOARD, WAVE_SHORT } from "@/components/Wave";
  *  0: 가운데 물결선 하나가 천천히 나타남
  *  1: 그 물결선이 위아래로 갈라지며 펼쳐지고, 사이로 Apramāṇa 가 떠오름
  *  2: 제목 + 짧은 물결 + 뜻 (한 줄씩 천천히)
- *  3: 작업 의도 (맨 아래 "쌓아올리다."부터 위로 한 줄씩 쌓임)
+ *  3: 작업 의도 (맨 아래 "쌓아올리다."부터 위로 빠르게 쌓이고, 다 쌓인 뒤 읽을 시간을 줌)
  *  → 홈
  * 화면을 탭하면 다음 단계로 넘어감.
  */
-const HOLD = [1700, 3300, 5000, 4800]; // 각 단계 머무는 시간(ms) — 늘리면 더 천천히
-const FADE_OUT = 550;                  // 장면이 사라지는 시간(ms)
+const HOLD = [1900, 3700, 5600, 5600]; // 각 단계 머무는 시간(ms) — 늘리면 더 천천히
+const FADE_OUT = 800;                  // 장면이 사라지는 시간(ms)
+const FADE_HOME = 1400;                // 마지막 장면 → 홈으로 넘어갈 때 (더 천천히)
 
 export default function Onboarding() {
   const [step, setStep] = useState(0);
@@ -35,15 +36,14 @@ export default function Onboarding() {
     if (step === 0) return setStep(1);
     setLeaving(true);
     setTimeout(() => {
-      setLeaving(false);
-      if (step < 3) setStep(step + 1);
+      if (step < 3) { setLeaving(false); setStep(step + 1); }
       else router.replace("/home");
-    }, FADE_OUT);
+    }, step === 3 ? FADE_HOME : FADE_OUT);
   }
 
   return (
     <main className="ob" onClick={next}>
-      <div className={`ob-stage ${leaving ? "out" : ""}`}>
+      <div className={`ob-stage ${leaving ? (step === 3 ? "out home" : "out") : ""}`}>
         {step <= 1 && (
           <div className={`split ${step === 1 ? "open" : ""}`}>
             <div className="w top"><Wave text={WAVE_ONBOARD} opacity={0.8} /></div>
@@ -70,9 +70,9 @@ export default function Onboarding() {
 
         {step === 3 && (
           <p className="ob-text stack">
-            <span className="line rise" style={{ animationDelay: "2.1s" }}>유한한 형태 안에 무한한 가능성을 믿으며,</span>
-            <span className="line rise" style={{ animationDelay: "1.4s" }}>결과를 확신할 수 없더라도</span>
-            <span className="line rise" style={{ animationDelay: ".7s" }}>희망을 담아서</span>
+            <span className="line rise" style={{ animationDelay: ".75s" }}>유한한 형태 안에 무한한 가능성을 믿으며,</span>
+            <span className="line rise" style={{ animationDelay: ".5s" }}>결과를 확신할 수 없더라도</span>
+            <span className="line rise" style={{ animationDelay: ".25s" }}>희망을 담아서</span>
             <span className="line rise" style={{ animationDelay: "0s" }}>쌓아올리다.</span>
           </p>
         )}
@@ -85,9 +85,10 @@ export default function Onboarding() {
         .ob-stage { width: 100%; display: flex; justify-content: center;
                     transition: opacity ${FADE_OUT}ms ease; }
         .ob-stage.out { opacity: 0; }
+        .ob-stage.out.home { transition-duration: ${FADE_HOME}ms; }
 
-        .ob-title { font-family: var(--font-title); font-weight: 400; font-size: 34px;
-                    line-height: 47px; letter-spacing: -0.68px; }
+        .ob-title { font-family: var(--font-title); font-weight: 400; font-size: 30px;
+                    line-height: 47px; letter-spacing: -0.6px; }
         .ob-text { font-size: 16px; line-height: 30px; letter-spacing: -0.32px; }
         .line { display: block; }
 
@@ -95,7 +96,7 @@ export default function Onboarding() {
         .rise { opacity: 0; animation: rise 1.1s ease forwards; }
         @keyframes rise { from { opacity: 0; transform: translateY(4px) } to { opacity: 1; transform: none } }
         /* 마지막 장면: 아래 줄부터 쌓여 올라가듯 */
-        .stack .rise { animation-name: stack; }
+        .stack .rise { animation-name: stack; animation-duration: .6s; animation-timing-function: cubic-bezier(.2,.7,.3,1); }
         @keyframes stack { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
 
         /* 물결선 갈라지기: 처음엔 두 줄이 가운데 겹쳐 있다가 위아래로 */

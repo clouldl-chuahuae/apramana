@@ -23,7 +23,7 @@ export default function Header({ variant = "page" }: { variant?: "home" | "page"
         </nav>
         <style>{`
           .hh { padding: 57px 29px 0; display: flex; flex-direction: column; gap: 16px; }
-          .hh-title { font-family: var(--font-title); font-size: 26px; line-height: 25px; letter-spacing: -0.52px; align-self: flex-start; }
+          .hh-title { display: block; height: 20px; margin: 2.5px 0; font-family: var(--font-title); font-size: 26px; line-height: 14px; letter-spacing: -0.52px; align-self: flex-start; }
           .hh-menu { display: flex; flex-direction: column; gap: 10px; font-size: 18px; line-height: 20px; }
         `}</style>
       </header>
@@ -43,8 +43,9 @@ export default function Header({ variant = "page" }: { variant?: "home" | "page"
       <style>{`
         .hd { padding: 57px 20px 0; display: flex; flex-direction: column; gap: 16px; }
         .hd-row { display: flex; gap: 14px; padding: 0 10px; align-items: flex-start; }
-        .hd-title { width: 89px; padding-top: 2.5px; font-family: var(--font-title); font-size: 20px; line-height: 20px; letter-spacing: -0.4px; }
+        .hd-title { display: block; width: 89px; height: 20px; margin-top: 2.5px; font-family: var(--font-title); font-size: 20px; line-height: 14px; letter-spacing: -0.4px; white-space: nowrap; }
         .hd-menu { display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 20px; }
+        .hd .u, .hh .u { text-underline-offset: auto; text-underline-position: from-font; text-decoration-thickness: from-font; }
       `}</style>
     </header>
   );
