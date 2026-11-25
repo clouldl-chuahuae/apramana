@@ -13,9 +13,9 @@ import Wave, { WAVE_ONBOARD, WAVE_SHORT } from "@/components/Wave";
  *  → 홈
  * 화면을 탭하면 다음 단계로 넘어감.
  */
-const HOLD = [1900, 3700, 5600, 5200]; // 각 단계 머무는 시간(ms) — 늘리면 더 천천히
-const FADE_OUT = 800;                  // 장면이 사라지는 시간(ms)
-const FADE_HOME = 1400;                // 마지막 장면 → 홈으로 넘어갈 때 (더 천천히)
+const HOLD = [1600, 3200, 4900, 4800]; // 각 단계 머무는 시간(ms) — 늘리면 더 천천히
+const FADE_OUT = 650;                  // 장면이 사라지는 시간(ms)
+const FADE_HOME = 1100;                // 마지막 장면 → 홈으로 넘어갈 때 (더 천천히)
 
 export default function Onboarding() {
   const [step, setStep] = useState(0);

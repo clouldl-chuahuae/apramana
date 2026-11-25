@@ -65,10 +65,10 @@ export default function Guestbook() {
         <Header />
 
         <section className="gb-intro">
-          <p className="mist" style={{ animationDelay: "0.3s" }}>기존의 안정적인 캐스팅 방식 대신, 새로운 제작 기법을 직접 연구하고 발전시켰습니다. 하나의 틀에서 하루에 한 개의 기물만 제작할 수 있었으며, 그마저도 절반 이상이 균열로 인해 완성되지 못했습니다.</p>
-          <p className="mist" style={{ animationDelay: "1.2s" }}>그럼에도 다음에는 조금이라도 더 나은 결과가 나오기를 기대하며 같은 과정을 수없이 반복했습니다.</p>
-          <p className="mist" style={{ animationDelay: "2.1s" }}>이 전시를 보러 와주신 분들도 무언가를 이루기 위해 애쓰고 있는 순간이 있으리라 생각합니다. 그 시간이 비록 기대했던 결과로 이어지지 않더라도, 애써온 마음과 노력만큼은 헛되지 않았으면 좋겠습니다.</p>
-          <p className="mist" style={{ animationDelay: "3.0s" }}>귀한 시간을 내어 작품을 보러 와주셔서 감사합니다.</p>
+          <p className="mist" onAnimationEnd={(e) => e.currentTarget.classList.add("done")} style={{ animationDelay: "0.3s" }}>기존의 안정적인 캐스팅 방식 대신, 새로운 제작 기법을 직접 연구하고 발전시켰습니다. 하나의 틀에서 하루에 한 개의 기물만 제작할 수 있었으며, 그마저도 절반 이상이 균열로 인해 완성되지 못했습니다.</p>
+          <p className="mist" onAnimationEnd={(e) => e.currentTarget.classList.add("done")} style={{ animationDelay: "1.2s" }}>그럼에도 다음에는 조금이라도 더 나은 결과가 나오기를 기대하며 같은 과정을 수없이 반복했습니다.</p>
+          <p className="mist" onAnimationEnd={(e) => e.currentTarget.classList.add("done")} style={{ animationDelay: "2.1s" }}>이 전시를 보러 와주신 분들도 무언가를 이루기 위해 애쓰고 있는 순간이 있으리라 생각합니다. 그 시간이 비록 기대했던 결과로 이어지지 않더라도, 애써온 마음과 노력만큼은 헛되지 않았으면 좋겠습니다.</p>
+          <p className="mist" onAnimationEnd={(e) => e.currentTarget.classList.add("done")} style={{ animationDelay: "3.0s" }}>귀한 시간을 내어 작품을 보러 와주셔서 감사합니다.</p>
         </section>
 
         <section ref={gridRef} className="gb-grid" style={{ opacity: ready ? 1 : 0 }}>
@@ -120,13 +120,19 @@ export default function Guestbook() {
         .gb-intro { background: var(--bg); padding: 30px 20px 52px; font-size: 15px; line-height: 24px;
                     text-align: justify; word-break: break-all; }
         .gb-intro p + p { margin-top: 24px; }
-        /* 고정글: 안개 속에서 떠오르듯 문단별로 (방명록 칸의 타이핑과 다른 효과) */
-        .mist { opacity: 0; animation: mist 2.4s cubic-bezier(.22,1,.36,1) forwards; }
+        /* 고정글: 빛이 번지듯 왼쪽 위에서 오른쪽 아래로 스르륵 드러남 (방명록 칸의 타이핑과 다른 효과) */
+        .mist { opacity: 0;
+                -webkit-mask-image: linear-gradient(115deg, #000 40%, rgba(0,0,0,.25) 50%, transparent 60%);
+                        mask-image: linear-gradient(115deg, #000 40%, rgba(0,0,0,.25) 50%, transparent 60%);
+                -webkit-mask-size: 260% 100%; mask-size: 260% 100%;
+                -webkit-mask-position: 100% 0; mask-position: 100% 0;
+                animation: mist 2.2s cubic-bezier(.33,0,.2,1) forwards; }
         @keyframes mist {
-          0%   { opacity: 0; filter: blur(12px); transform: translateY(10px); }
-          60%  { opacity: .7; filter: blur(2px); }
-          100% { opacity: 1; filter: blur(0); transform: none; }
+          0%   { opacity: 1; -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+          100% { opacity: 1; -webkit-mask-position: 0 0; mask-position: 0 0; }
         }
+        /* 애니메이션이 끝나면 마스크를 완전히 걷어냄 (흐린 채로 남지 않게) */
+        .mist.done { -webkit-mask-image: none; mask-image: none; animation: none; opacity: 1; }
 
         /* 격자: 3칸, 선 3px #ae9f3d 20% */
         .gb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;

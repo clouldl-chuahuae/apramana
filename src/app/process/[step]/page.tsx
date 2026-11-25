@@ -115,8 +115,8 @@ export default async function ProcessPage({ params }: { params: Promise<{ step: 
         .sec { display: flex; flex-direction: column; }
         .sec + .sec { margin-top: 40px; }
 
-        .st { display: flex; gap: 10px; font-weight: 400; font-size: 19px; line-height: 30px; }
-        .st > span:first-child { min-width: 18.5px; }
+        .st { display: flex; gap: 10px; font-weight: 400; font-size: 18px; line-height: 26px; }
+        .st > span:first-child { min-width: 17.5px; }
         .st16 { display: flex; gap: 8px; font-size: 16px; line-height: 24px; text-align: justify; padding-right: 50px; }
         .st16 > span:first-child { min-width: 16px; }
         .note { font-size: 15px; line-height: 24px; opacity: .4; text-align: justify; }
