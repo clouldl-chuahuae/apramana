@@ -19,7 +19,7 @@ function rich(s: string) {
   ));
 }
 
-const src = (i: Img) => `/process/${i.id.replace(":", "-")}.png`;
+const src = (i: Img) => `/process/${i.id.replace(":", "-")}.jpg`;
 const justify = { left: "flex-start", center: "center", right: "flex-end" } as const;
 
 function render(b: Block, i: number) {
