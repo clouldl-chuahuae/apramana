@@ -1,6 +1,6 @@
 /**
  * 홈 화면 사진 목록 (피그마 홈 그리드 순서, 84×90 칸에 맞춰 잘라둔 2배 크기 jpg)
- * 사진은 /public/img/works 폴더. 순서를 바꾸려면 이 목록 순서만 바꾸면 됨.
+ * 사진은 /public/img/home 폴더. 순서를 바꾸려면 이 목록 순서만 바꾸면 됨.
  */
 export const works: string[] = [
   "001.jpg",

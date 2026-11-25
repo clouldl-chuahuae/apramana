@@ -9,11 +9,11 @@ import Wave, { WAVE_ONBOARD, WAVE_SHORT } from "@/components/Wave";
  *  0: 가운데 물결선 하나가 천천히 나타남
  *  1: 그 물결선이 위아래로 갈라지며 펼쳐지고, 사이로 Apramāṇa 가 떠오름
  *  2: 제목 + 짧은 물결 + 뜻 (한 줄씩 천천히)
- *  3: 작업 의도 (맨 아래 "쌓아올리다."부터 위로 빠르게 쌓이고, 다 쌓인 뒤 읽을 시간을 줌)
+ *  3: 작업 의도 ("쌓아올리다."부터 위로 0.12초 간격, 흐릿하게 번지며 빠르게 쌓이고, 다 쌓인 뒤 읽을 시간을 줌)
  *  → 홈
  * 화면을 탭하면 다음 단계로 넘어감.
  */
-const HOLD = [1900, 3700, 5600, 5600]; // 각 단계 머무는 시간(ms) — 늘리면 더 천천히
+const HOLD = [1900, 3700, 5600, 5200]; // 각 단계 머무는 시간(ms) — 늘리면 더 천천히
 const FADE_OUT = 800;                  // 장면이 사라지는 시간(ms)
 const FADE_HOME = 1400;                // 마지막 장면 → 홈으로 넘어갈 때 (더 천천히)
 
@@ -70,9 +70,9 @@ export default function Onboarding() {
 
         {step === 3 && (
           <p className="ob-text stack">
-            <span className="line rise" style={{ animationDelay: ".75s" }}>유한한 형태 안에 무한한 가능성을 믿으며,</span>
-            <span className="line rise" style={{ animationDelay: ".5s" }}>결과를 확신할 수 없더라도</span>
-            <span className="line rise" style={{ animationDelay: ".25s" }}>희망을 담아서</span>
+            <span className="line rise" style={{ animationDelay: ".36s" }}>유한한 형태 안에 무한한 가능성을 믿으며,</span>
+            <span className="line rise" style={{ animationDelay: ".24s" }}>결과를 확신할 수 없더라도</span>
+            <span className="line rise" style={{ animationDelay: ".12s" }}>희망을 담아서</span>
             <span className="line rise" style={{ animationDelay: "0s" }}>쌓아올리다.</span>
           </p>
         )}
@@ -90,14 +90,18 @@ export default function Onboarding() {
         .ob-title { font-family: var(--font-title); font-weight: 400; font-size: 30px;
                     line-height: 47px; letter-spacing: -0.6px; }
         .ob-text { font-size: 16px; line-height: 30px; letter-spacing: -0.32px; }
-        .line { display: block; }
+        .line { display: block; white-space: nowrap; }
 
         /* 한 줄씩 천천히 떠오르기 */
         .rise { opacity: 0; animation: rise 1.1s ease forwards; }
         @keyframes rise { from { opacity: 0; transform: translateY(4px) } to { opacity: 1; transform: none } }
         /* 마지막 장면: 아래 줄부터 쌓여 올라가듯 */
-        .stack .rise { animation-name: stack; animation-duration: .6s; animation-timing-function: cubic-bezier(.2,.7,.3,1); }
-        @keyframes stack { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+        .stack .rise { animation-name: dream; animation-duration: 1.1s; animation-timing-function: cubic-bezier(.16,1,.3,1); }
+        @keyframes dream {
+          0%   { opacity: 0; transform: translateY(22px) scale(1.04); filter: blur(10px); letter-spacing: .18em; }
+          55%  { opacity: .85; filter: blur(2px); }
+          100% { opacity: 1; transform: none; filter: blur(0); letter-spacing: -0.32px; }
+        }
 
         /* 물결선 갈라지기: 처음엔 두 줄이 가운데 겹쳐 있다가 위아래로 */
         .split { position: relative; width: 100%; height: 160px; }
