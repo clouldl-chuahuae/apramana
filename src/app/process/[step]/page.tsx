@@ -2,103 +2,140 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Wave from "@/components/Wave";
-import { processPages, type Block } from "@/content/process";
+import Photo from "@/components/Photo";
+import { processPages, type Block, type Img } from "@/content/process";
 
 export function generateStaticParams() {
   return processPages.map((_, i) => ({ step: String(i + 1) }));
 }
 
-/** [[용어]] → 밑줄, \n → 줄바꿈 */
+/** [[밑줄]] + \n 줄바꿈 */
 function rich(s: string) {
   return s.split("\n").map((line, li) => (
     <span key={li}>
       {li > 0 && <br />}
-      {line.split(/(\[\[.+?\]\])/g).map((part, pi) =>
-        part.startsWith("[[") ? <u key={pi}>{part.slice(2, -2)}</u> : part
-      )}
+      {line.split(/(\[\[.+?\]\])/g).map((p, pi) => (p.startsWith("[[") ? <u key={pi}>{p.slice(2, -2)}</u> : p))}
     </span>
   ));
 }
 
-function Img({ src }: { src: string }) {
-  // eslint-disable-next-line @next/next/no-img-element
-  return src ? <img src={`/process/${src}`} alt="" loading="lazy" /> : <div className="ph" />;
-}
+const src = (i: Img) => `/process/${i.id.replace(":", "-")}.png`;
+const justify = { left: "flex-start", center: "center", right: "flex-end" } as const;
 
 function render(b: Block, i: number) {
   switch (b.type) {
     case "step":
+      return b.size === 16 ? (
+        <p key={i} className="st16"><span>{b.no}.</span><span>{rich(b.title)}</span></p>
+      ) : (
+        <h2 key={i} className="st"><span>{b.no}.</span><span>{rich(b.title)}</span></h2>
+      );
+    case "note":
+      return <p key={i} className="note" style={{ paddingLeft: b.indent ?? 30 }}>{rich(b.text)}</p>;
+    case "img":
       return (
-        <div key={i} className="st">
-          <h2>
-            <span className="no">{b.no}</span>
-            <span>{rich(b.title)}</span>
-          </h2>
-          {b.note && <p className="note">ㄴ {b.note}</p>}
+        <div key={i} className="imgs" style={{ justifyContent: justify[b.align ?? "left"] }}>
+          <Photo src={src(b.img)} w={b.img.w} h={b.img.h} />
         </div>
       );
-    case "images":
+    case "row":
       return (
-        <div key={i} className={`imgs n${b.src.length}`}>
-          {b.src.map((s, j) => <Img key={j} src={s} />)}
+        <div key={i} className="imgs" style={{ gap: b.gap ?? 8, justifyContent: justify[b.align ?? "left"] }}>
+          {b.imgs.map((im) => <Photo key={im.id} src={src(im)} w={im.w} h={im.h} />)}
         </div>
       );
     case "text":
-      return <p key={i} className={`tx ${b.tone ?? "body"}`}>{rich(b.text)}</p>;
-    case "list":
       return (
-        <ul key={i} className="ls">
-          {b.items.map((t, j) => <li key={j}>{t}</li>)}
+        <div key={i} className="tx" style={{ fontSize: b.size ?? 16, paddingLeft: b.indent ?? 0 }}>
+          {b.text.split("\n\n").map((para, pi) =>
+            para.startsWith(">>")
+              ? <p key={pi} className="accent">{rich(para.slice(2))}</p>
+              : <p key={pi}>{rich(para)}</p>
+          )}
+        </div>
+      );
+    case "small":
+      return (
+        <p key={i} className="small" style={b.size === 15 ? { fontSize: 15, lineHeight: "24px" } : undefined}>
+          {rich(b.text)}
+        </p>
+      );
+    case "sub":
+      return (
+        <ul key={i} className="sub">
+          {b.items.map(([k, t]) => <li key={k}><span>{k}</span><span>{t}</span></li>)}
         </ul>
       );
+    case "contra":
+      return (
+        <div key={i} className="contra">
+          <span className="cut">˗ˋˏ✄ -----------</span>
+          <p className="ct">{b.title}</p>
+          <p className="cx">{b.text}</p>
+          <Wave style={{ alignSelf: "stretch" }} />
+        </div>
+      );
+    case "caption":
+      return <p key={i} className="cap">{rich(b.text)}</p>;
   }
 }
 
 export default async function ProcessPage({ params }: { params: Promise<{ step: string }> }) {
   const { step } = await params;
   const n = Number(step);
-  const blocks = processPages[n - 1];
-  if (!blocks) notFound();
+  const sections = processPages[n - 1];
+  if (!sections) notFound();
   const last = n === processPages.length;
 
   return (
     <main>
       <Header />
       <article className="pc">
-        {blocks.map(render)}
+        {sections.map((s, si) => (
+          <section key={si} className="sec" style={s.gap ? { marginTop: s.gap } : undefined}>
+            {s.blocks.map(render)}
+          </section>
+        ))}
 
         <footer className="pc-foot">
-          {last ? (
-            <>
-              <Wave width={340} style={{ marginBottom: 18 }} />
-              <Link href="/guestbook">방명록 →</Link>
-            </>
-          ) : (
-            <Link href={`/process/${n + 1}`}>다음 →</Link>
-          )}
+          {last && <Wave style={{ marginBottom: 16, alignSelf: "stretch" }} />}
+          <Link href={last ? "/guestbook" : `/process/${n + 1}`} className="u">
+            {last ? "방명록 →" : "이어서 →"}
+          </Link>
         </footer>
       </article>
 
       <style>{`
-        .pc { padding: 24px 25px 60px; }
-        .st { margin: 34px 0 12px; }
-        .st:first-child { margin-top: 0; }
-        .st h2 { display: flex; gap: 6px; font-family: var(--font-serif); font-weight: 400;
-                 font-size: 17px; line-height: 1.5; }
-        .st u { text-underline-offset: 3px; text-decoration-thickness: 1px; }
-        .note { margin: 4px 0 0 22px; font-size: 11.5px; color: var(--sub); line-height: 1.6; }
-        .imgs { display: grid; gap: 6px; margin: 12px 0; }
-        .imgs.n2 { grid-template-columns: 1fr 1fr; }
-        .imgs.n3 { grid-template-columns: 1fr 1fr 1fr; }
-        .imgs img { width: 100%; height: auto; }
-        .imgs .ph { width: 100%; aspect-ratio: 4/3; background: #e9e8e4; }
-        .tx { font-size: 13px; line-height: 1.75; text-align: justify; margin: 12px 0; }
-        .tx.accent { color: var(--accent); }
-        .tx.sub { color: var(--sub); font-size: 11.5px; }
-        .ls { list-style: none; font-size: 11.5px; color: var(--sub); line-height: 1.7; padding-left: 22px; }
-        .ls li { margin-bottom: 6px; }
-        .pc-foot { margin-top: 48px; text-align: right; font-family: var(--font-serif); font-size: 14px; }
-        .pc-foot a { text-decoration: underline; text-underline-offset: 3px; }
+        .pc { padding: 16px 20px 80px; }
+        .sec { display: flex; flex-direction: column; gap: 14px; }
+        .sec + .sec { margin-top: 40px; }
+
+        .st { display: flex; gap: 10px; font-weight: 400; font-size: 20px; line-height: 30px; }
+        .st > span:first-child { min-width: 20px; }
+        .st16 { display: flex; gap: 8px; font-size: 16px; line-height: 24px; text-align: justify; padding-right: 50px; }
+        .st16 > span:first-child { min-width: 16px; }
+        .st + .note { margin-top: -12px; }
+        .note { font-size: 15px; line-height: 24px; opacity: .4; text-align: justify; }
+
+        .imgs { display: flex; }
+        .tx { line-height: 24px; text-align: justify; opacity: .8; }
+        .tx p + p { margin-top: 24px; }
+        .tx .accent { color: var(--accent); }
+        .small { font-size: 12px; line-height: 20px; opacity: .4; margin-top: -6px; }
+
+        .sub { list-style: none; padding: 0 74px 0 30px; display: flex; flex-direction: column; gap: 6px;
+               font-size: 12px; line-height: 20px; opacity: .4; text-align: justify; margin-top: -6px; }
+        .sub li { display: flex; gap: 10px; }
+        .sub li span:first-child { white-space: nowrap; }
+
+        .contra { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; text-align: right; }
+        .contra .cut { font-size: 14px; line-height: 17px; opacity: .6; white-space: nowrap; }
+        .contra .ct { font-size: 20px; line-height: 20px; }
+        .contra .cx { width: 285px; font-size: 15px; line-height: 24px; opacity: .8; }
+
+        .cap { font-size: 12px; line-height: 20px; text-align: center; padding-top: 50px; }
+
+        .pc-foot { margin-top: 80px; display: flex; flex-direction: column; align-items: flex-end; font-size: 16px; line-height: 24px; }
       `}</style>
     </main>
   );

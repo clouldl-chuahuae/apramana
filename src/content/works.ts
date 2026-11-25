@@ -7,7 +7,7 @@ export const works: string[] = [
   // "01-1.jpg", "01-2.jpg", "01-3.jpg", "01-4.jpg",
 ];
 
-/** 한 줄에 몇 장 */
-export const COLUMNS = 4;
-/** 사진 비율 (가로/세로). 피그마 썸네일 비율에 맞춰 수정 */
-export const RATIO = 1 / 1.12;
+
+
+
+

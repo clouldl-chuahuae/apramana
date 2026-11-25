@@ -1,43 +1,37 @@
-/**
- * 점으로 이어진 물결선 (·.·˙·.·˙)
- * 피그마에서 SVG로 export해서 /public/wave.svg 로 넣으면 그걸로 교체 가능.
- */
+/** 피그마 물결 구분선: Pretendard 10px 글자 ⋱⋰ 를 위아래 뒤집은 것 */
+export const WAVE_LONG = "⋰ ⋱⋰⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰⋱⋰ ⋱";
+export const WAVE_ONBOARD = "⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰⋱⋰ ⋱⋰";
+export const WAVE_SHORT = "⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰ ⋱⋰⋱⋰";
+
 export default function Wave({
-  width = 340,
-  period = 14,   // 물결 한 번의 길이(px)
-  amp = 2,       // 물결 높이(px)
-  step = 2.3,    // 점 간격(px)
-  r = 0.55,      // 점 크기
-  color = "#555",
-  className,
+  text = WAVE_LONG,
+  opacity = 1,
   style,
 }: {
-  width?: number;
-  period?: number;
-  amp?: number;
-  step?: number;
-  r?: number;
-  color?: string;
-  className?: string;
+  text?: string;
+  opacity?: number;
   style?: React.CSSProperties;
 }) {
-  const h = amp * 2 + r * 4;
-  const dots: { x: number; y: number }[] = [];
-  for (let x = r; x <= width - r; x += step) {
-    dots.push({ x, y: h / 2 - amp * Math.sin((2 * Math.PI * x) / period) });
-  }
   return (
-    <svg
-      className={className}
-      style={{ display: "block", margin: "0 auto", ...style }}
-      width={width}
-      height={h}
-      viewBox={`0 0 ${width} ${h}`}
+    <div
       aria-hidden
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        height: 16,
+        fontFamily: "var(--font-wave)",
+        fontSize: 10,
+        lineHeight: "16px",
+        color: "#1e1e1e",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        maxWidth: "100%",
+        opacity,
+        transform: "scaleY(-1)",
+        ...style,
+      }}
     >
-      {dots.map((d, i) => (
-        <circle key={i} cx={d.x.toFixed(2)} cy={d.y.toFixed(2)} r={r} fill={color} />
-      ))}
-    </svg>
+      {text}
+    </div>
   );
 }

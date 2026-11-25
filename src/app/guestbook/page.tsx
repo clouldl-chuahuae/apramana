@@ -65,7 +65,7 @@ export default function Guestbook() {
 
       {!writing && !reading && (
         <button className="gb-btn" onClick={() => setWriting(true)}>
-          ⋆. ˚‧ 마음 남기기 ‧˚ .⋆
+          ⋆. *:･ 마음 남기기⊹ :* ˖.⋆
         </button>
       )}
 
@@ -86,38 +86,40 @@ export default function Guestbook() {
       )}
 
       <style>{`
-        .gb { min-height: 100dvh; padding-bottom: 140px; }
-        .gb.blur .gb-page { filter: blur(3px); opacity: .45; transition: .25s; pointer-events: none; }
+        .gb { min-height: 100dvh; background: var(--cream); padding-bottom: 120px; }
+        .gb-page { background: var(--cream); }
+        .gb.blur .gb-page { filter: blur(3px); opacity: .5; transition: .25s; pointer-events: none; }
+        .gb .hd { background: var(--bg); }
 
-        .gb-intro { padding: 26px 25px 60px; font-size: 14px; line-height: 1.75;
-                    text-align: justify; letter-spacing: .02em; }
-        .gb-intro p + p { margin-top: 20px; }
+        .gb-intro { background: var(--bg); padding: 30px 20px 52px; font-size: 15px; line-height: 24px;
+                    text-align: justify; word-break: break-all; }
+        .gb-intro p + p { margin-top: 24px; }
 
-        .gb-grid { display: grid; grid-template-columns: repeat(3, 1fr);
-                   gap: 3px; background: var(--cell-line);
-                   border-top: 3px solid var(--cell-line); transition: opacity .2s; }
-        .cell { background: var(--cell-bg); height: 184px; display: flex;
-                align-items: center; justify-content: center; padding: 0 18px; text-align: left; }
-        .sq { width: 100%; font-size: 12px; line-height: 16px; letter-spacing: .06em;
+        /* 격자: 3칸, 선 3px #ae9f3d 20% */
+        .gb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;
+                   background: var(--line); border-top: 3px solid var(--line);
+                   border-bottom: 3px solid var(--line); transition: opacity .2s; }
+        .cell { background: var(--cream); height: 184px; display: flex; align-items: flex-end;
+                justify-content: center; padding: 22px 14px; text-align: left; }
+        .sq { width: 100px; font-size: 12px; line-height: 16px; opacity: .8;
               text-align: justify; text-align-last: justify;
               word-break: break-all; overflow-wrap: anywhere; white-space: normal; }
-        .measure { position: absolute; left: 0; top: 0; visibility: hidden; pointer-events: none;
-                   width: calc((min(100vw, var(--w)) - 6px) / 3); height: auto; }
+        .measure { position: absolute; left: 0; top: 0; visibility: hidden; pointer-events: none; height: auto; }
 
-        .gb-btn { position: fixed; left: 50%; bottom: 60px; transform: translateX(-50%);
-                  width: min(340px, calc(100vw - 50px)); height: 50px; z-index: 20;
-                  background: var(--button); border: 1px solid #000; font-size: 17px; }
+        .gb-btn { position: fixed; left: 50%; bottom: 44px; transform: translateX(-50%);
+                  width: min(350px, calc(100vw - 40px)); height: 50px; z-index: 20;
+                  background: var(--button); border: 1px solid #000; font-size: 20px; line-height: 33px; }
         .gb-btn:disabled { opacity: .5; }
 
         .sheet { position: fixed; inset: 0; z-index: 10; display: flex; justify-content: center; }
-        .sheet-box { position: absolute; top: 200px; width: min(352px, calc(100vw - 38px));
-                     height: 342px; background: var(--cell-bg); border: 1px solid #333; }
+        .sheet-box { position: absolute; top: 200px; width: min(350px, calc(100vw - 40px));
+                     height: 342px; background: var(--cream); border: 1px solid #000; }
         .sheet-box textarea { width: 100%; height: 100%; resize: none; border: 0; outline: 0;
-                     background: transparent; padding: 22px 30px; font: inherit;
-                     font-size: 14px; line-height: 22px; letter-spacing: .04em; color: var(--ink); }
-        .sheet-box .count { position: absolute; right: 12px; bottom: 8px; font-size: 11px; color: var(--sub); }
-        .sheet-box.read { overflow-y: auto; padding: 22px 30px; font-size: 14px; line-height: 22px;
-                          letter-spacing: .04em; white-space: pre-wrap; word-break: break-all; }
+                     background: transparent; padding: 22px 26px; font: inherit;
+                     font-size: 15px; line-height: 24px; color: var(--ink); }
+        .sheet-box .count { position: absolute; right: 12px; bottom: 8px; font-size: 11px; opacity: .4; }
+        .sheet-box.read { overflow-y: auto; padding: 22px 26px; font-size: 15px; line-height: 24px;
+                          white-space: pre-wrap; word-break: break-all; }
         .err { position: absolute; top: 552px; font-size: 12px; color: #b33; }
       `}</style>
     </main>

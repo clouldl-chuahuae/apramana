@@ -18,11 +18,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* 폰트는 피그마에서 확인 후 바꿔도 됨 → globals.css의 --font-* 변수만 수정 */}
+        {/* Alegreya(제목) + 고운돋움(산돌 연결 전 임시 한글) */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500&family=Gowun+Batang&family=Gowun+Dodum&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Alegreya&family=Gowun+Dodum&display=swap"
         />
+        {/* 물결선 ⋱⋰ 글자용 */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+        />
+        {/* ▼ 산돌구름 웹폰트 코드는 여기에 붙임 */}
       </head>
       <body>
         <div className="frame">{children}</div>

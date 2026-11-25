@@ -5,7 +5,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 /**
  * 방명록 칸 '네모' 만들기
  *  - 글이 짧으면: 마지막 줄 남는 자리를 ------- 로 채움
- *  - 글이 길면: MAX_LINES 줄에서 자르고 … 붙임
+ *  - 글이 길면: MAX_LINES 줄에서 자르고 ⋯ 붙임
  * 화면에 안 보이는 측정용 칸 하나(measurer)에 실제로 글을 넣어보며 줄 수를 셈.
  */
 export function useSquareText(texts: string[], maxLines: number) {
@@ -35,10 +35,10 @@ export function useSquareText(texts: string[], maxLines: number) {
           let lo = 0, hi = text.length;
           while (lo < hi) {
             const mid = Math.ceil((lo + hi) / 2);
-            if (lines(text.slice(0, mid).trimEnd() + "…") <= maxLines) lo = mid;
+            if (lines(text.slice(0, mid).trimEnd() + "⋯") <= maxLines) lo = mid;
             else hi = mid - 1;
           }
-          return text.slice(0, lo).trimEnd() + "…";
+          return text.slice(0, lo).trimEnd() + "⋯";
         }
 
         // 남는 자리 → ------- 로 채우기 (줄 수가 늘지 않는 최대 개수)

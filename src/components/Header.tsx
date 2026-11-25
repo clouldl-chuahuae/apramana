@@ -4,28 +4,47 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Wave from "./Wave";
 
-export default function Header({ wave = true }: { wave?: boolean }) {
+/**
+ * 피그마 헤더
+ *  - 홈: 제목 위, 메뉴 아래로 세로 배치 (구분선 없음)
+ *  - 과정/방명록: 제목 옆에 메뉴 + 아래 물결 구분선
+ */
+export default function Header({ variant = "page" }: { variant?: "home" | "page" }) {
   const path = usePathname();
-  const on = (p: string) => (path.startsWith(p) ? "on" : "");
+  const on = (p: string) => (path.startsWith(p) ? "u" : "");
+
+  if (variant === "home") {
+    return (
+      <header className="hh">
+        <Link href="/home" className="hh-title u">Apramāṇa</Link>
+        <nav className="hh-menu">
+          <Link href="/process/1">과정</Link>
+          <Link href="/guestbook">방명록</Link>
+        </nav>
+        <style>{`
+          .hh { padding: 57px 29px 0; display: flex; flex-direction: column; gap: 14px; }
+          .hh-title { font-family: var(--font-title); font-size: 23px; line-height: 25px; letter-spacing: -0.46px; }
+          .hh-menu { display: flex; flex-direction: column; gap: 10px; font-size: 18px; line-height: 20px; }
+        `}</style>
+      </header>
+    );
+  }
 
   return (
     <header className="hd">
-      <nav className="hd-row">
-        <Link href="/home" className={`hd-title ${on("/home")}`}>Apramāṇa</Link>
-        <div className="hd-menu">
+      <div className="hd-row">
+        <Link href="/home" className="hd-title">Apramāṇa</Link>
+        <nav className="hd-menu">
           <Link href="/process/1" className={on("/process")}>과정</Link>
           <Link href="/guestbook" className={on("/guestbook")}>방명록</Link>
-        </div>
-      </nav>
-      {wave && <Wave width={340} />}
-
+        </nav>
+      </div>
+      <Wave />
       <style>{`
-        .hd { padding: 46px 25px 0; background: var(--bg); }
-        .hd-row { display: flex; gap: 26px; margin-bottom: 22px; }
-        .hd-title { font-family: var(--font-title); font-size: 17px; line-height: 1; padding-top: 1px; }
-        .hd-menu { display: flex; flex-direction: column; gap: 6px;
-                   font-family: var(--font-serif); font-size: 14px; line-height: 1.2; }
-        .hd .on { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+        .hd { padding: 57px 20px 0; display: flex; flex-direction: column; gap: 16px; }
+        .hd-row { display: flex; gap: 14px; padding: 0 10px; align-items: flex-start; }
+        .hd-title { width: 89px; font-family: var(--font-title); font-size: 20px; line-height: 20px; letter-spacing: -0.4px; }
+        .hd-menu { display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 20px; }
       `}</style>
     </header>
   );
