@@ -2,7 +2,7 @@
  * 과정 탭 (피그마 iPhone 13&14 - 1, 2, 3 그대로 옮김)
  *
  * 한 페이지 = 섹션 목록(섹션 사이 40px), 섹션 = 블록 목록(블록 사이 14px)
- *  step     : 단계 제목. no=번호, [[밑줄]] / \n 줄바꿈. size 16 이면 작은 단계(10~12, 18~19)
+ *  step     : 단계 제목. no=번호, [[밑줄]] / \n 줄바꿈. size 16 이면 작은 단계(10~14)
  *  note     : 'ㄴ' 회색 설명 (indent: 왼쪽 들여쓰기 px)
  *  img      : 피그마 이미지 레이어 id → /public/process/<id의 :를 -로>.png. w×h 는 피그마 크기
  *  row      : 이미지 여러 장 가로 배치
@@ -14,7 +14,7 @@
  */
 export type Img = { id: string; w: number; h: number };
 export type Block =
-  | { type: "step"; no: number; title: string; size?: 20 | 16 }
+  | { type: "step"; no: number; title: string; size?: 19 | 16 }
   | { type: "note"; text: string; indent?: number }
   | { type: "img"; img: Img; align?: "left" | "center" | "right" }
   | { type: "row"; imgs: Img[]; gap?: number; align?: "left" | "center" | "right" }
@@ -52,7 +52,7 @@ export const processPages: Section[][] = [
     ]},
     { blocks: [
       { type: "step", no: 5, title: "다양한 패턴으로 배치하고\n재단하면서 패치를 만든다." },
-      { type: "img", img: { id: "1:64", w: 350, h: 473 } },
+      { type: "img", img: { id: "1:64", w: 350, h: 501 } },
       { type: "text", text: "색슬립을 재단할 때는 대리석판 위에서 작업한다. 대리석판 역시 색슬립이 바닥에 달라붙어 떼낼 때 찢어질 위험이 크지만, 석고판은 수분을 빠르게 흡수하기 때문에 슬립이 쉽게 건조되고 갈라질 가능성이 더 높았다." },
       { type: "img", img: { id: "1:66", w: 350, h: 354 } },
       { type: "small", text: "※ 수많은 슬립들을 재단했던 석고판.\n갈라짐을 경험하고 대리석판으로 바꿨다." },
@@ -68,7 +68,7 @@ export const processPages: Section[][] = [
   [
     { blocks: [
       { type: "step", no: 6, title: "공기를 차단하기 위해\n비닐봉지에 보관한다." },
-      { type: "img", img: { id: "1:95", w: 350, h: 204 } },
+      { type: "img", img: { id: "1:95", w: 350, h: 217 } },
       { type: "text", text: "색슬립 패치 한 개를 제작하는 데 시간이 꽤 소요되기 때문에, 여러 개의 패치를 제작하는 동안 먼저 만든 패치가 마르지 않도록 주의한다.\n\n>>모든 패치를 최대한 말랑하고 유연한 상태로 유지하는 것이 중요하며, 각 패치의 건조 상태를 비슷하게 유지하면 접합 후 수축률 차이로 인해 발생하는 균열도 나아질 것이라 판단했다." },
     ]},
     { blocks: [
@@ -100,7 +100,7 @@ export const processPages: Section[][] = [
     ]},
     { blocks: [
       { type: "step", no: 9, title: "[[압착]]¹한다." },
-      { type: "img", img: { id: "1:160", w: 350, h: 466 } },
+      { type: "img", img: { id: "1:160", w: 350, h: 447 } },
       { type: "step", no: 10, size: 16, title: "깨끗한 슬립을 몰드에 붓는다." },
       { type: "step", no: 11, size: 16, title: "원하는 두께의 기벽이 형성될 때까지 기다린 후, 남은 슬립을 따라낸다." },
       { type: "step", no: 12, size: 16, title: "몰드를 거꾸로 뒤집어 중력에 의해 내부에 남아 있는 슬립이 자연스럽게 흘러나오도록 한다." },
@@ -133,8 +133,8 @@ export const processPages: Section[][] = [
       { type: "img", img: { id: "1:218", w: 350, h: 262 } },
     ]},
     { blocks: [
-      { type: "step", no: 18, size: 16, title: "완전히 건조시킨다." },
-      { type: "step", no: 19, size: 16, title: "가마 온도 800~900℃ 에서\n1차 소성을 한다." },
+      { type: "step", no: 18, title: "완전히 건조시킨다." },
+      { type: "step", no: 19, title: "가마 온도 800~900℃ 에서\n1차 소성을 한다." },
       { type: "img", img: { id: "1:224", w: 350, h: 180 } },
     ]},
     { blocks: [
@@ -148,7 +148,7 @@ export const processPages: Section[][] = [
       { type: "text", text: "유약을 바른 기물을 가마에서 다시 1250~1280℃ 로 구운다." },
       { type: "step", no: 22, title: "다듬는다." },
       { type: "text", text: "가마에서 나온 기물을 사포로 간다." },
-      { type: "step", no: 23, title: "완성" },
+      { type: "step", no: 23, title: "완성 ⊹ :*" },
     ]},
   ],
 ];
