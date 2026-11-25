@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Header from "@/components/Header";
 import { supabase, type Entry } from "@/lib/supabase";
 import { useSquareText } from "@/components/useSquareText";
@@ -33,6 +33,16 @@ export default function Guestbook() {
   const [writing, setWriting] = useState(false);
   const [reading, setReading] = useState<Entry | null>(null);
   const [newIds, setNewIds] = useState<Set<number>>(new Set()); // 방금 쓴 글은 바로 써지게
+  const gridRef = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false); // 격자가 화면에 보이면 그때부터 써지기 시작
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setInView(true); io.disconnect(); } }, { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const load = useCallback(async () => {
     if (!supabase) return setEntries(DEMO);
@@ -61,11 +71,11 @@ export default function Guestbook() {
           <p>귀한 시간을 내어 작품을 보러 와주셔서 감사합니다.</p>
         </section>
 
-        <section className="gb-grid" style={{ opacity: ready ? 1 : 0 }}>
+        <section ref={gridRef} className="gb-grid" style={{ opacity: ready ? 1 : 0 }}>
           {entries.map((e, i) => (
             <button key={e.id} className="cell" onClick={() => setReading(e)}>
               <p className="sq">
-                {ready && <Typed text={out[i] ?? e.message} start={newIds.has(e.id) ? 0.2 : i * CELL_GAP} />}
+                {ready && inView && <Typed text={out[i] ?? e.message} start={newIds.has(e.id) ? 0.2 : i * CELL_GAP} />}
               </p>
             </button>
           ))}
