@@ -15,7 +15,7 @@
 export type Img = { id: string; w: number; h: number };
 type B =
   | { type: "step"; no: number; title: string; size?: 19 | 16 }
-  | { type: "note"; text: string; indent?: number }
+  | { type: "note"; text: string; indent?: number; right?: number }
   | { type: "img"; img: Img; align?: "left" | "center" | "right" }
   | { type: "row"; imgs: Img[]; gap?: number; align?: "left" | "center" | "right" }
   | { type: "text"; text: string; size?: 16 | 15; indent?: number }
@@ -143,7 +143,7 @@ export const processPages: Section[][] = [
     ]},
     { blocks: [
       { type: "step", no: 20, title: "[[시유]]* 준비를 한다." },
-      { type: "note", text: "ㄴ 초벌을 마친 도자기 표면에 유리질의 액체인 [[유약]]*을 입히는 과정" },
+      { type: "note", right: 85, text: "ㄴ 초벌을 마친 도자기 표면에 유리질의 액체인 [[유약]]*을 입히는 과정" },
       { type: "note", indent: 132, mt: 2, text: "ㄴ 고온에 녹아 얇은 유리막을\n형성하는 광물성 분말 혼합물" },
       { type: "text", text: ">>유약을 바르는 이유는 방수성과 내구성을 높이고, 색상과 광택 등 심미적 효과를 더하기 위해서다. 다만 충분히 소성되어 치밀해진 백자는 흡수율이 낮기 때문에, 작품의 의도에 따라 흙 본연의 색감과 질감을 살리고자 유약을 생략하기도 한다.\n\n기물의 안쪽에만 유약을 바르기 위해 내부에 유약을 채운 뒤 따라냈다. 이때 유약을 바르지 않을 외벽에 유약이 묻지 않도록 미리 테이핑 작업을 진행했다." },
     ]},

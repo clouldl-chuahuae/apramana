@@ -32,7 +32,7 @@ function render(b: Block, i: number) {
         <h2 key={i} className="st"><span>{b.no}.</span><span>{rich(b.title)}</span></h2>
       );
     case "note":
-      return <p key={i} className="note" style={{ paddingLeft: b.indent ?? 30 }}>{rich(b.text)}</p>;
+      return <p key={i} className="note" style={{ paddingLeft: b.indent ?? 30, paddingRight: b.right ?? 0 }}>{rich(b.text)}</p>;
     case "img":
       return (
         <div key={i} className="imgs" style={{ justifyContent: justify[b.align ?? "left"] }}>
