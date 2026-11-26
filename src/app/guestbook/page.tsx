@@ -180,11 +180,21 @@ export default function Guestbook() {
                      height: 342px; background: var(--cream); border: 1px solid #000; }
         .sheet-box textarea { width: 100%; height: 100%; resize: none; border: 0; outline: 0;
                      background: transparent; padding: 22px 26px; font: inherit;
-                     font-size: 15px; line-height: 24px; color: var(--ink); }
+                     font-size: 16px; line-height: 24px; color: var(--ink); }
         .sheet-box .count { position: absolute; right: 12px; bottom: 8px; font-size: 11px; opacity: .4; }
         .sheet-box.read { overflow-y: auto; padding: 22px 26px; font-size: 15px; line-height: 24px;
                           white-space: pre-wrap; word-break: break-all; }
         .err { position: absolute; top: 552px; font-size: 12px; color: #b33; }
+
+        /* 글쓰기 창: 칸과 보내기 버튼을 한 줄기로 쌓아서, 키보드가 올라와도 둘 다 보이게 */
+        .sheet.write { flex-direction: column; align-items: center; justify-content: flex-start;
+                       padding: 200px 20px 44px; }
+        .sheet.write .sheet-box { position: relative; top: auto; flex: 0 1 342px; min-height: 120px; }
+        .sheet.write .gb-btn { position: static; transform: none; margin-top: auto; flex-shrink: 0; }
+        .sheet.write .err { position: static; margin-top: 8px; }
+        .sheet.write.kb { padding: 16px 20px 12px; }
+        .sheet.write.kb .sheet-box { flex: 1 1 auto; }
+        .sheet.write.kb .gb-btn { margin-top: 12px; }
       `}</style>
     </main>
   );
@@ -215,8 +225,34 @@ function WriteSheet({ onClose, onSent }: { onClose: () => void; onSent: (e: Entr
     onSent(data);
   }
 
+  // 키보드가 올라오면 실제로 보이는 영역(visualViewport)에 맞춰 칸과 버튼을 다시 배치
+  const [vp, setVp] = useState<{ top: number; h: number; kb: boolean } | null>(null);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    const full = window.innerHeight;
+    const update = () => {
+      if (!vv) return;
+      setVp({ top: vv.offsetTop, h: vv.height, kb: vv.height < full * 0.8 });
+    };
+    update();
+    vv?.addEventListener("resize", update);
+    vv?.addEventListener("scroll", update);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden"; // 뒤 페이지가 같이 스크롤되지 않게
+    return () => {
+      vv?.removeEventListener("resize", update);
+      vv?.removeEventListener("scroll", update);
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  const kb = vp?.kb ?? false;
   return (
-    <div className="sheet" onClick={onClose}>
+    <div
+      className={`sheet write ${kb ? "kb" : ""}`}
+      style={vp ? { top: vp.top, height: vp.h, bottom: "auto" } : undefined}
+      onClick={onClose}
+    >
       <div className="sheet-box" onClick={(e) => e.stopPropagation()}>
         <textarea
           autoFocus
