@@ -20,7 +20,7 @@ export type N =
   | { t: "img"; id: string; w: number; h: number }
   | { t: "dot"; paras: string[]; px?: number; lh?: number; extra?: string }
   | { t: "mark"; text: string; center?: boolean }
-  | { t: "small"; text: string }
+  | { t: "small"; text: string; center?: boolean }
   | { t: "sub"; items: [string, string][] }
   | { t: "contra"; title: string; text: string }
   | { t: "wave" };
@@ -51,11 +51,11 @@ export const processPages: Page[] = [
             ]),
             img("1:49", 350, 233),
           ]),
-          { t: "mark", text: "안료의 배합 비율을 정확하게 맞추기 위해\n저울을 사용해 무게를 측정한다." },
+          { t: "small", text: "※ 안료의 배합 비율을 정확하게 맞추기 위해\n저울을 사용해 무게를 측정한다." },
         ]),
         col(14, [
           step(3, "안료를 섞은 흙물을\n석고판에 붓는다."),
-          col(8, [img("1:55", 175, 131), { t: "mark", text: "너무 과하게 마르지 않도록 주의한다.\n적당히 말랑할 때, 떼서 비닐에 보관한다." }]),
+          col(8, [img("1:55", 175, 131), { t: "small", text: "※ 너무 과하게 마르지 않도록 주의한다.\n적당히 말랑할 때, 떼서 비닐에 보관한다." }]),
         ]),
         col(14, [
           step(4, "색슬립들을 쌓고 자른다."),
@@ -72,7 +72,7 @@ export const processPages: Page[] = [
             img("1:64", 350, 501),
             { t: "dot", paras: ["색슬립을 재단할 때는 대리석판 위에서 작업한다. 대리석판 역시 색슬립이 바닥에 달라붙어 떼낼 때 찢어질 위험이 크지만, 석고판은 수분을 빠르게 흡수하기 때문에 슬립이 쉽게 건조되고 갈라질 가능성이 더 높았다."] },
           ]),
-          col(8, [img("21:119", 330, 339), { t: "small", text: "※ 수많은 슬립들을 재단했던 석고판.\n갈라짐을 경험하고 대리석판으로 바꿨다." }], { align: "center" }),
+          col(16, [img("21:119", 286, 294), { t: "small", center: true, text: "※ 수많은 슬립들을 재단했던 석고판.\n갈라짐을 경험하고 대리석판으로 바꿨다." }], { align: "center" }),
           col(14, [
             row(8, [img("1:69", 176, 189), img("1:70", 165, 189)]),
             { t: "dot", paras: [
@@ -143,7 +143,7 @@ export const processPages: Page[] = [
           "물레를 회전시키며 도구와 손을 이용해 패치 사이의 접합부를 꼼꼼하게 압착한다.",
           ">>반복해서 압착하는 이유는 단 하나, 균열이 발생할 가능성을 조금이라도 줄이기 위해서다. 하지만 이 과정을 거친다고 해서 균열이 발생하지 않는다고 장담할 수는 없다. 웬만하면 조금 더 수월하고 평범한 기법으로 기물을 제작하기를 권장한다…",
         ] },
-        col(8, [img("1:178", 130, 130), { t: "mark", center: true, text: "열심히... 끙끙..;;" }], { align: "center", pad: [60, 0, 40, 0], h: 237 }),
+        col(8, [img("1:178", 130, 130), { t: "small", center: true, text: "※ 열심히... 끙끙..;;" }], { align: "center", pad: [60, 0, 40, 0], h: 237 }),
       ]),
       col(80, [
         col(10, [

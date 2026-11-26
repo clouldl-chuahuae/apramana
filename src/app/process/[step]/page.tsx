@@ -93,7 +93,7 @@ function R({ n }: { n: N }): React.ReactNode {
         </div>
       );
     case "small":
-      return <p className="small">{rich(n.text)}</p>;
+      return <p className="small" style={n.center ? { textAlign: "center" } : undefined}>{rich(n.text)}</p>;
     case "sub":
       return (
         <ul className="sub">
@@ -136,8 +136,10 @@ export default async function ProcessPage({ params }: { params: Promise<{ step: 
       <style>{`
         .pc { padding: 16px 20px 240px; }
 
-        .st { display: flex; font-weight: 400; font-size: 18px; line-height: 26px; }
-        .st .no { flex: 0 0 27px; }
+        /* 제목: 번호는 피그마 목록처럼 글 시작점(27px) 바로 왼쪽에 붙고, 줄바꿈은 피그마에 넣은 곳에서만 */
+        .st { display: flex; width: 100%; font-weight: 400; font-size: 18px; line-height: 26px; }
+        .st .no { flex: 0 0 27px; text-align: right; padding-right: 6px; white-space: nowrap; }
+        .st .no + span { flex: 1; min-width: 0; }
         .note { font-size: 15px; line-height: 24px; text-align: justify; width: 100%; }
 
         .dot { display: flex; gap: 10px; width: 100%; }
