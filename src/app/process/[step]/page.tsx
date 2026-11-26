@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Wave from "@/components/Wave";
 import Photo from "@/components/Photo";
-import { processPages, type Block, type Img } from "@/content/process";
+import { processPages, type N } from "@/content/process";
 
 export function generateStaticParams() {
   return processPages.map((_, i) => ({ step: String(i + 1) }));
@@ -19,127 +19,144 @@ function rich(s: string) {
   ));
 }
 
-const src = (i: Img) => `/img/process/${i.id.replace(":", "-")}.jpg`;
-const DEFAULT_MT: Partial<Record<Block["type"], number>> = { note: 2, small: 8, sub: 8 };
-const justify = { left: "flex-start", center: "center", right: "flex-end" } as const;
+/** 피그마 ○ (18×25 프레임 안의 글자) */
+function Dot() {
+  return (
+    <svg width="18" height="25" viewBox="0 0 18 25" aria-hidden style={{ flexShrink: 0 }}>
+      <path fill="#000" d="M9.012 16.952c-2.472 0-4.464-1.992-4.464-4.464 0-2.448 1.992-4.44 4.464-4.44 2.448 0 4.44 1.992 4.44 4.44 0 2.472-1.992 4.464-4.44 4.464Zm0-.516c2.16 0 3.924-1.764 3.924-3.948 0-2.16-1.764-3.924-3.924-3.924-2.184 0-3.948 1.764-3.948 3.924 0 2.184 1.764 3.948 3.948 3.948Z" />
+    </svg>
+  );
+}
 
-function render(b: Block, i: number) {
-  switch (b.type) {
-    case "step":
-      return b.size === 16 ? (
-        <p key={i} className="st16"><span>{b.no}.</span><span>{rich(b.title)}</span></p>
-      ) : (
-        <h2 key={i} className="st"><span>{b.no}.</span><span>{rich(b.title)}</span></h2>
-      );
-    case "note":
-      return <p key={i} className="note" style={{ paddingLeft: b.indent ?? 30, paddingRight: b.right ?? 0 }}>{rich(b.text)}</p>;
-    case "img":
+const flex = { start: "flex-start", center: "center", end: "flex-end" } as const;
+
+function R({ n }: { n: N }): React.ReactNode {
+  switch (n.t) {
+    case "col":
       return (
-        <div key={i} className="imgs" style={{ justifyContent: justify[b.align ?? "left"] }}>
-          <Photo src={src(b.img)} w={b.img.w} h={b.img.h} />
+        <div
+          style={{
+            display: "flex", flexDirection: "column", gap: n.gap ?? 0,
+            alignItems: flex[n.align ?? "start"],
+            justifyContent: n.justify === "center" ? "center" : "flex-start",
+            padding: n.pad ? n.pad.map((v) => `${v}px`).join(" ") : undefined,
+            minHeight: n.minH, width: "100%",
+          }}
+        >
+          {n.items.map((c, i) => <R key={i} n={c} />)}
         </div>
       );
     case "row":
       return (
-        <div key={i} className="imgs" style={{ gap: b.gap ?? 8, justifyContent: justify[b.align ?? "left"] }}>
-          {b.imgs.map((im) => <Photo key={im.id} src={src(im)} w={im.w} h={im.h} />)}
+        <div style={{ display: "flex", gap: n.gap ?? 0, justifyContent: flex[n.align ?? "start"], width: "100%" }}>
+          {n.items.map((c, i) => <R key={i} n={c} />)}
         </div>
       );
-    case "text":
+    case "step":
+      return <h2 className="st"><span className="no">{n.no}.</span><span>{rich(n.title)}</span></h2>;
+    case "note":
       return (
-        <div key={i} className="tx" style={{ fontSize: b.size ?? 16, paddingLeft: b.indent ?? 0 }}>
-          {b.text.split("\n\n").map((para, pi) =>
-            para.startsWith(">>")
-              ? <p key={pi} className="accent">{rich(para.slice(2))}</p>
-              : <p key={pi}>{rich(para)}</p>
-          )}
+        <p className="note" style={{ paddingLeft: n.pl ?? 30, paddingRight: n.pr ?? 0, opacity: n.op ?? 0.4 }}>
+          {rich(n.text)}
+        </p>
+      );
+    case "img":
+      return <Photo src={`/img/p2/${n.id.replace(":", "-")}.jpg`} w={n.w} h={n.h} />;
+    case "dot": {
+      const lh = n.lh ?? 26;
+      return (
+        <div className="dot" style={{ padding: `0 ${n.px ?? 0}px` }}>
+          <Dot />
+          <div className="dot-body">
+            <div className="dot-tx" style={{ lineHeight: `${lh}px` }}>
+              {n.paras.map((p, i) => (
+                <p key={i} className={p.startsWith(">>") ? "accent" : undefined} style={i ? { marginTop: lh } : undefined}>
+                  {rich(p.replace(/^>>/, ""))}
+                </p>
+              ))}
+            </div>
+            {n.extra && <p className="dot-extra">{n.extra}</p>}
+          </div>
+        </div>
+      );
+    }
+    case "mark":
+      return (
+        <div className="mark" style={n.center ? { justifyContent: "center", width: "100%" } : undefined}>
+          <span>※</span>
+          <span style={n.center ? undefined : { width: 288 }}>{rich(n.text)}</span>
         </div>
       );
     case "small":
-      return (
-        <p key={i} className="small" style={b.size === 15 ? { fontSize: 15, lineHeight: "24px" } : undefined}>
-          {rich(b.text)}
-        </p>
-      );
+      return <p className="small">{rich(n.text)}</p>;
     case "sub":
       return (
-        <ul key={i} className="sub">
-          {b.items.map(([k, t]) => <li key={k}><span>{k}</span><span>{t}</span></li>)}
+        <ul className="sub">
+          {n.items.map(([k, t]) => <li key={k}><span>{k}</span><span>{t}</span></li>)}
         </ul>
       );
     case "contra":
       return (
-        <div key={i} className="contra">
+        <div className="contra">
           <span className="cut">˗ˋˏ✄ -----------</span>
-          <p className="ct">{b.title}</p>
-          <p className="cx">{b.text}</p>
+          <p className="ct">{n.title}</p>
+          <p className="cx">{n.text}</p>
           <Wave style={{ alignSelf: "stretch" }} />
         </div>
       );
-    case "caption":
-      return <p key={i} className="cap">{rich(b.text)}</p>;
+    case "wave":
+      return <div style={{ width: "100%" }}><Wave /></div>;
   }
 }
 
 export default async function ProcessPage({ params }: { params: Promise<{ step: string }> }) {
   const { step } = await params;
   const n = Number(step);
-  const sections = processPages[n - 1];
-  if (!sections) notFound();
+  const page = processPages[n - 1];
+  if (!page) notFound();
   const last = n === processPages.length;
 
   return (
     <main>
       <Header />
       <article className="pc">
-        {sections.map((s, si) => (
-          <section key={si} className="sec" style={s.gap ? { marginTop: s.gap } : undefined}>
-            {s.blocks.map((b, bi) => {
-              const inner = s.inner ?? 14;
-              const mt = bi === 0 ? 0 : b.mt ?? DEFAULT_MT[b.type] ?? inner;
-              return <div key={bi} style={{ marginTop: mt }}>{render(b, bi)}</div>;
-            })}
-          </section>
-        ))}
-
-        <footer className="pc-foot">
-          {last && <Wave style={{ marginBottom: 16, alignSelf: "stretch" }} />}
+        <R n={page.body} />
+        <div className="pc-link" style={{ marginTop: page.linkInside ? 80 : 16 }}>
           <Link href={last ? "/guestbook" : `/process/${n + 1}`} className="u">
             {last ? "방명록 →" : "이어서 →"}
           </Link>
-        </footer>
+        </div>
       </article>
 
       <style>{`
-        .pc { padding: 16px 20px 80px; }
-        .sec { display: flex; flex-direction: column; }
-        .sec + .sec { margin-top: 40px; }
+        .pc { padding: 16px 20px 240px; }
 
-        .st { display: flex; gap: 10px; font-weight: 400; font-size: 18px; line-height: 26px; }
-        .st > span:first-child { min-width: 17.5px; }
-        .st16 { display: flex; gap: 8px; font-size: 16px; line-height: 24px; text-align: justify; padding-right: 50px; }
-        .st16 > span:first-child { min-width: 16px; }
-        .note { font-size: 15px; line-height: 24px; opacity: .4; text-align: justify; }
+        .st { display: flex; font-weight: 400; font-size: 18px; line-height: 26px; }
+        .st .no { flex: 0 0 27px; }
+        .note { font-size: 15px; line-height: 24px; text-align: justify; width: 100%; }
 
-        .imgs { display: flex; }
-        .tx { line-height: 24px; text-align: justify; opacity: .8; }
-        .tx p + p { margin-top: 24px; }
-        .tx .accent { color: var(--accent); }
-        .small { font-size: 12px; line-height: 20px; opacity: .4; }
+        .dot { display: flex; gap: 10px; width: 100%; }
+        .dot-body { flex: 1; min-width: 0; }
+        .dot-tx { font-size: 16px; opacity: .8; text-align: justify; }
+        .dot-tx .accent { color: var(--accent); }
+        .dot-extra { margin-top: 10px; font-size: 14px; line-height: 23px; opacity: .5; text-align: justify; }
+
+        .mark { display: flex; gap: 8px; font-size: 12px; line-height: 20px; }
+        .mark span { opacity: .4; }
+        .mark span:first-child { white-space: nowrap; }
+        .small { font-size: 12px; line-height: 20px; opacity: .4; width: 100%; }
 
         .sub { list-style: none; padding: 0 74px 0 30px; display: flex; flex-direction: column; gap: 6px;
-               font-size: 12px; line-height: 20px; opacity: .4; text-align: justify; }
+               font-size: 12px; line-height: 20px; opacity: .4; text-align: justify; width: 100%; }
         .sub li { display: flex; gap: 10px; }
         .sub li span:first-child { white-space: nowrap; }
 
-        .contra { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; text-align: right; }
+        .contra { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; text-align: right; width: 100%; }
         .contra .cut { font-size: 14px; line-height: 17px; opacity: .6; white-space: nowrap; }
         .contra .ct { font-size: 20px; line-height: 20px; }
         .contra .cx { width: 285px; font-size: 15px; line-height: 24px; opacity: .8; }
 
-        .cap { font-size: 12px; line-height: 20px; text-align: center; padding-top: 50px; }
-
-        .pc-foot { margin-top: 80px; display: flex; flex-direction: column; align-items: flex-end; font-size: 16px; line-height: 24px; }
+        .pc-link { display: flex; justify-content: flex-end; font-size: 16px; line-height: 24px; }
       `}</style>
     </main>
   );

@@ -35,13 +35,13 @@ export default function Header({ variant = "page" }: { variant?: "home" | "page"
       <div className="hd-row">
         <Link href="/home" className="hd-title">Apramāṇa</Link>
         <nav className="hd-menu">
-          <Link href="/process/1" className={on("/process")}>과정</Link>
+          <Link href="/process/1" className={on("/process")}>{path.startsWith("/process") ? "》 과정" : "과정"}</Link>
           <Link href="/guestbook" className={on("/guestbook")}>방명록</Link>
         </nav>
       </div>
       <Wave />
       <style>{`
-        .hd { padding: 28px 20px 0; display: flex; flex-direction: column; gap: 16px; }
+        .hd { padding: 30px 20px 0; display: flex; flex-direction: column; gap: 16px; }
         .hd-row { display: flex; gap: 14px; padding: 0 10px; align-items: flex-start; }
         .hd-title { display: block; width: 89px; height: 20px; margin-top: 2.5px; font-family: var(--font-title); font-size: 20px; line-height: 14px; letter-spacing: -0.4px; white-space: nowrap; }
         .hd-menu { display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 20px; }
