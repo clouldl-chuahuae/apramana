@@ -36,7 +36,7 @@ export default function Header({ variant = "page" }: { variant?: "home" | "page"
         <Link href="/home" className="hd-title">Apramāṇa</Link>
         <nav className="hd-menu">
           <Link href="/process/1" className={on("/process")}>{path.startsWith("/process") ? "》 과정" : "과정"}</Link>
-          <Link href="/guestbook" className={on("/guestbook")}>방명록</Link>
+          <Link href="/guestbook" className={on("/guestbook")}>{path.startsWith("/guestbook") ? "》 방명록" : "방명록"}</Link>
         </nav>
       </div>
       <Wave />
