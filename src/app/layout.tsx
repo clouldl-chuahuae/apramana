@@ -23,7 +23,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* 390px보다 좁은 폰(갤럭시 등)은 화면 폭에 맞춰 전체를 살짝 축소 */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var w=Math.min(screen.width||390,(window.outerWidth||9999));if(w&&w<390){var m=document.querySelector('meta[name="viewport"]');if(m){var s=(w/390).toFixed(4);m.setAttribute('content','width=390, initial-scale='+s+', minimum-scale='+s);}}})();`,
+            __html: `(function(){
+var w=Math.min(screen.width||390,(window.outerWidth||9999));
+if(!(w&&w<390))return;
+var m=document.querySelector('meta[name="viewport"]');
+if(m){var s=(w/390).toFixed(4);m.setAttribute('content','width=390, initial-scale='+s+', minimum-scale='+s);}
+function fb(){var vv=window.visualViewport;if(!vv)return;
+ if(document.documentElement.clientWidth>vv.width*vv.scale+2&&vv.scale>0.99){document.documentElement.style.zoom=(vv.width/390).toFixed(4);}}
+window.addEventListener('load',fb);
+})();`,
           }}
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
