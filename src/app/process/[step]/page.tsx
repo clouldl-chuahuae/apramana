@@ -61,7 +61,7 @@ function R({ n }: { n: N }): React.ReactNode {
         </p>
       );
     case "img":
-      return <Photo src={`/img/p2/${n.id.replace(":", "-")}.jpg`} w={n.w} h={n.h} />;
+      return <Photo src={`/img/proc-p3/${n.id.replace(":", "-")}.jpg`} w={n.w} h={n.h} />;
     case "dot": {
       const lh = n.lh ?? 26;
       return (
