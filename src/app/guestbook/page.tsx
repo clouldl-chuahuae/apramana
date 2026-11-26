@@ -229,17 +229,27 @@ function WriteSheet({ onClose, onSent }: { onClose: () => void; onSent: (e: Entr
   const [vp, setVp] = useState<{ top: number; h: number; kb: boolean } | null>(null);
   useEffect(() => {
     const vv = window.visualViewport;
-    const full = window.innerHeight;
+    // 아이폰은 키보드가 올라오면 innerHeight도 같이 줄어서 기준으로 못 씀
+    // → 키보드와 상관없는 레이아웃 높이 + 지금까지 본 가장 큰 높이를 기준으로
+    let full = Math.max(document.documentElement.clientHeight, window.innerHeight, vv?.height ?? 0);
     const update = () => {
       if (!vv) return;
-      setVp({ top: vv.offsetTop, h: vv.height, kb: vv.height < full * 0.8 });
+      full = Math.max(full, document.documentElement.clientHeight);
+      // 보이는 높이가 원래보다 확 줄었거나(키보드), 그냥 좁으면(620px 미만) 압축 배치
+      const kb = vv.height < full * 0.8 || vv.height < 620;
+      setVp({ top: vv.offsetTop, h: vv.height, kb });
     };
     update();
+    const t1 = setTimeout(update, 300);
+    const t2 = setTimeout(update, 700);
+    window.addEventListener("scroll", update);
     vv?.addEventListener("resize", update);
     vv?.addEventListener("scroll", update);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden"; // 뒤 페이지가 같이 스크롤되지 않게
     return () => {
+      clearTimeout(t1); clearTimeout(t2);
+      window.removeEventListener("scroll", update);
       vv?.removeEventListener("resize", update);
       vv?.removeEventListener("scroll", update);
       document.body.style.overflow = prev;
