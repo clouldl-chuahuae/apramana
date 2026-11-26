@@ -1,4 +1,4 @@
-import Link from "next/link";
+import ToTop from "@/components/ToTop";
 import Header from "@/components/Header";
 import { works } from "@/content/works";
 
@@ -17,7 +17,7 @@ export default function Home() {
       </section>
 
       <footer className="hf">
-        <Link href="/home" className="hf-title u">Apramāṇa</Link>
+        <ToTop className="hf-title u">Apramāṇa</ToTop>
         <a href="mailto:yeyoung.ici@gmail.com" className="hf-mail">yeyoung.ici@gmail.com</a>
       </footer>
 
@@ -30,7 +30,7 @@ export default function Home() {
 
         .hf { display: flex; justify-content: space-between; align-items: center;
               width: 349px; margin: 18px auto 0; padding-bottom: 34px; font-family: var(--font-title); }
-        .hf-title { font-size: 23px; line-height: 25px; letter-spacing: -0.46px; }
+        .hf-title { font-family: var(--font-title); font-size: 23px; line-height: 25px; letter-spacing: -0.46px; }
         .hf-mail { font-size: 14px; line-height: 14px; letter-spacing: -0.28px; }
       `}</style>
     </main>

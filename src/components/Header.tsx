@@ -18,8 +18,8 @@ export default function Header({ variant = "page" }: { variant?: "home" | "page"
       <header className="hh">
         <Link href="/home" className="hh-title u">Apramāṇa</Link>
         <nav className="hh-menu">
-          <Link href="/process/1">과정</Link>
-          <Link href="/guestbook">방명록</Link>
+          <Link href="/process/1">》 과정</Link>
+          <Link href="/guestbook">》 방명록</Link>
         </nav>
         <style>{`
           .hh { padding: 28px 29px 0; display: flex; flex-direction: column; gap: 16px; }
