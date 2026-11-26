@@ -6,9 +6,13 @@ export const metadata: Metadata = {
   description: "유한한 형태 안에 무한한 가능성을 믿으며, 결과를 확신할 수 없더라도 희망을 담아서 쌓아올리다.",
 };
 
+/**
+ * 디자인이 390px 고정이라, 화면을 항상 390px 폭으로 잡고 기기 폭에 맞춰 통째로 확대/축소.
+ * → 갤럭시(360~384px)에서 옆으로 밀리거나 잘리지 않고, 큰 아이폰에서도 꽉 차게 보임.
+ */
 export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
+  width: 390,
+  initialScale: undefined,
   themeColor: "#fffef5",
 };
 

@@ -3,7 +3,7 @@
 
 create table if not exists public.guestbook (
   id          bigint generated always as identity primary key,
-  message     text        not null check (char_length(btrim(message)) between 1 and 300),
+  message     text        not null check (char_length(btrim(message)) between 1 and 800),
   hidden      boolean     not null default false,   -- 지우고 싶은 글은 Table Editor에서 true로
   created_at  timestamptz not null default now()
 );

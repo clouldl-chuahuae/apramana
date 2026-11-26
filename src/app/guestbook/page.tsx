@@ -6,7 +6,7 @@ import { supabase, type Entry } from "@/lib/supabase";
 import { useSquareText } from "@/components/useSquareText";
 
 const MAX_LINES = 8;   // 한 칸 최대 줄 수 (넘으면 …)
-const MAX_CHARS = 300; // 한 사람이 쓸 수 있는 최대 글자 수
+const MAX_CHARS = 800; // 한 사람이 쓸 수 있는 최대 글자 수
 const TYPE_SPEED = 0.035; // 글자 하나 써지는 간격(초)
 const CELL_GAP = 0.45;    // 칸과 칸 사이 시작 간격(초)
 
@@ -163,7 +163,7 @@ export default function Guestbook() {
                    border-bottom: 3px solid var(--line); transition: opacity .2s; }
         .cell { background: var(--cream); height: 184px; display: flex; align-items: flex-end;
                 justify-content: center; padding: 22px 14px; text-align: left; }
-        .sq { width: 100px; font-size: 12px; line-height: 16px; opacity: .8;
+        .sq { width: 100%; max-width: 100px; font-size: 12px; line-height: 16px; opacity: .8;
               text-align: justify; text-align-last: justify;
               word-break: break-all; overflow-wrap: anywhere; white-space: normal; }
         .ch { opacity: 0; animation: ch .12s ease forwards; }
