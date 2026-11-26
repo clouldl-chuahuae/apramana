@@ -40,7 +40,7 @@ function R({ n }: { n: N }): React.ReactNode {
             alignItems: flex[n.align ?? "start"],
             justifyContent: n.justify === "center" ? "center" : "flex-start",
             padding: n.pad ? n.pad.map((v) => `${v}px`).join(" ") : undefined,
-            minHeight: n.minH, width: "100%",
+            minHeight: n.minH, height: n.h, width: "100%",
           }}
         >
           {n.items.map((c, i) => <R key={i} n={c} />)}
@@ -69,11 +69,16 @@ function R({ n }: { n: N }): React.ReactNode {
           <Dot />
           <div className="dot-body">
             <div className="dot-tx" style={{ lineHeight: `${lh}px` }}>
-              {n.paras.map((p, i) => (
-                <p key={i} className={p.startsWith(">>") ? "accent" : undefined} style={i ? { marginTop: lh } : undefined}>
-                  {rich(p.replace(/^>>/, ""))}
-                </p>
-              ))}
+              {n.paras.map((p, i) => {
+                const own = p.startsWith("@24") ? 24 : undefined;
+                const txt = p.replace(/^@24/, "");
+                return (
+                  <p key={i} className={txt.startsWith(">>") ? "accent" : undefined}
+                     style={{ marginTop: i ? lh : undefined, lineHeight: own ? `${own}px` : undefined }}>
+                    {rich(txt.replace(/^>>/, ""))}
+                  </p>
+                );
+              })}
             </div>
             {n.extra && <p className="dot-extra">{n.extra}</p>}
           </div>

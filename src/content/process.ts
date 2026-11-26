@@ -5,7 +5,7 @@
  * step      : 단계 제목 18px / 줄간격 26. [[밑줄]], \n 줄바꿈
  * note      : 'ㄴ' 회색 설명. pl/pr = 좌우 여백, op = 투명도
  * img       : 피그마 이미지 레이어 → /public/img/p2/<id의 :를 -로>.jpg
- * dot       : ○ + 본문. px = 좌우 여백(10번 단계부터 10), 문단 앞 ">>" 는 초록 문단
+ * dot       : ○ + 본문. px = 좌우 여백(10번 단계부터 10), 문단 앞 ">>" 는 초록 문단, "@24" 는 그 문단만 줄간격 24
  * mark      : ※ + 작은 회색 글
  * small     : ※ 가 글 안에 붙은 작은 회색 글
  * sub       : 7-1) 세부 단계
@@ -13,7 +13,7 @@
  * wave      : 물결 구분선
  */
 export type N =
-  | { t: "col"; items: N[]; gap?: number; pad?: [number, number, number, number]; align?: "start" | "center" | "end"; minH?: number; justify?: "start" | "center" }
+  | { t: "col"; items: N[]; gap?: number; pad?: [number, number, number, number]; align?: "start" | "center" | "end"; minH?: number; h?: number; justify?: "start" | "center" }
   | { t: "row"; items: N[]; gap?: number; align?: "start" | "center" | "end" }
   | { t: "step"; no: number; title: string }
   | { t: "note"; text: string; pl?: number; pr?: number; op?: number }
@@ -94,7 +94,7 @@ export const processPages: Page[] = [
         step(6, "공기를 차단하기 위해\n비닐봉지에 보관한다."),
         img("1:95", 350, 217),
         { t: "dot", paras: [
-          "색슬립 패치 한 개를 제작하는 데 시간이 꽤 소요되기 때문에, 여러 개의 패치를 제작하는 동안 먼저 만든 패치가 마르지 않게 주의한다.",
+          "@24색슬립 패치 한 개를 제작하는 데 시간이 꽤 소요되기 때문에, 여러 개의 패치를 제작하는 동안 먼저 만든 패치가 마르지 않게 주의한다.",
           ">>모든 패치를 최대한 말랑하고 유연한 상태로 유지하면 접합 후 수축률 차이로 인해 발생하는 균열도 나아질 것이라 판단했다.",
         ] },
       ]),
@@ -143,7 +143,7 @@ export const processPages: Page[] = [
           "물레를 회전시키며 도구와 손을 이용해 패치 사이의 접합부를 꼼꼼하게 압착한다.",
           ">>반복해서 압착하는 이유는 단 하나, 균열이 발생할 가능성을 조금이라도 줄이기 위해서다. 하지만 이 과정을 거친다고 해서 균열이 발생하지 않는다고 장담할 수는 없다. 웬만하면 조금 더 수월하고 평범한 기법으로 기물을 제작하기를 권장한다…",
         ] },
-        col(8, [img("1:178", 130, 130), { t: "mark", center: true, text: "열심히... 끙끙..;;" }], { align: "center", pad: [60, 0, 40, 0] }),
+        col(8, [img("1:178", 130, 130), { t: "mark", center: true, text: "열심히... 끙끙..;;" }], { align: "center", pad: [60, 0, 40, 0], h: 237 }),
       ]),
       col(80, [
         col(10, [
