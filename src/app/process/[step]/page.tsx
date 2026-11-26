@@ -53,7 +53,7 @@ function R({ n }: { n: N }): React.ReactNode {
         </div>
       );
     case "step":
-      return <h2 className="st"><span className="no">{n.no}.</span><span>{rich(n.title)}</span></h2>;
+      return <h2 className={`st ${n.no >= 10 ? "two" : ""}`}><span className="no">{n.no}.</span><span>{rich(n.title)}</span></h2>;
     case "note":
       return (
         <p className="note" style={{ paddingLeft: n.pl ?? 30, paddingRight: n.pr ?? 0, opacity: n.op ?? 0.4 }}>
@@ -68,7 +68,7 @@ function R({ n }: { n: N }): React.ReactNode {
         <div className="dot" style={{ padding: `0 ${n.px ?? 0}px` }}>
           <Dot />
           <div className="dot-body">
-            <div className="dot-tx" style={{ lineHeight: `${lh}px` }}>
+            <div className="dot-tx" style={{ lineHeight: `${lh}px`, textAlign: n.left ? "left" : undefined }}>
               {n.paras.map((p, i) => {
                 const own = p.startsWith("@24") ? 24 : undefined;
                 const txt = p.replace(/^@24/, "");
@@ -105,7 +105,7 @@ function R({ n }: { n: N }): React.ReactNode {
         <div className="contra">
           <span className="cut">˗ˋˏ✄ -----------</span>
           <p className="ct">{n.title}</p>
-          <p className="cx">{n.text}</p>
+          <p className="cx">{rich(n.text)}</p>
           <Wave style={{ alignSelf: "stretch" }} />
         </div>
       );
@@ -138,7 +138,9 @@ export default async function ProcessPage({ params }: { params: Promise<{ step: 
 
         /* 제목: 번호는 피그마 목록처럼 글 시작점(27px) 바로 왼쪽에 붙고, 줄바꿈은 피그마에 넣은 곳에서만 */
         .st { display: flex; width: 100%; font-weight: 400; font-size: 18px; line-height: 26px; }
-        .st .no { flex: 0 0 27px; text-align: right; padding-right: 6px; white-space: nowrap; }
+        .st .no { flex: 0 0 27px; text-align: right; padding-right: 8px; white-space: nowrap; }
+        /* 두 자리 번호(10~)는 피그마처럼 글이 40px에서 시작 → ○ 본문과 시작선이 맞음 */
+        .st.two .no { flex-basis: 40px; padding-right: 9px; }
         .st .no + span { flex: 1; min-width: 0; }
         .note { font-size: 15px; line-height: 24px; text-align: justify; width: 100%; }
 
@@ -161,7 +163,7 @@ export default async function ProcessPage({ params }: { params: Promise<{ step: 
         .contra { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; text-align: right; width: 100%; }
         .contra .cut { font-size: 14px; line-height: 17px; opacity: .6; white-space: nowrap; }
         .contra .ct { font-size: 20px; line-height: 20px; }
-        .contra .cx { width: 285px; font-size: 15px; line-height: 24px; opacity: .8; }
+        .contra .cx { width: 285px; font-size: 15px; line-height: 26px; opacity: .8; }
 
         .pc-link { display: flex; justify-content: flex-end; font-size: 16px; line-height: 24px; }
       `}</style>

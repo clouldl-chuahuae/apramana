@@ -5,7 +5,7 @@
  * step      : 단계 제목 18px / 줄간격 26. [[밑줄]], \n 줄바꿈
  * note      : 'ㄴ' 회색 설명. pl/pr = 좌우 여백, op = 투명도
  * img       : 피그마 이미지 레이어 → /public/img/proc-p3/<id의 :를 -로>.jpg
- * dot       : ○ + 본문. px = 좌우 여백(10번 단계부터 10), 문단 앞 ">>" 는 초록 문단, "@24" 는 그 문단만 줄간격 24
+ * dot       : ○ + 본문. left = 양끝정렬 안 함. px = 좌우 여백(10번 단계부터 10), 문단 앞 ">>" 는 초록 문단, "@24" 는 그 문단만 줄간격 24
  * mark      : ※ + 작은 회색 글
  * small     : ※ 가 글 안에 붙은 작은 회색 글
  * sub       : 7-1) 세부 단계
@@ -18,7 +18,7 @@ export type N =
   | { t: "step"; no: number; title: string }
   | { t: "note"; text: string; pl?: number; pr?: number; op?: number }
   | { t: "img"; id: string; w: number; h: number }
-  | { t: "dot"; paras: string[]; px?: number; lh?: number; extra?: string }
+  | { t: "dot"; paras: string[]; px?: number; lh?: number; extra?: string; left?: boolean }
   | { t: "mark"; text: string; center?: boolean }
   | { t: "small"; text: string; center?: boolean }
   | { t: "sub"; items: [string, string][] }
@@ -82,7 +82,7 @@ export const processPages: Page[] = [
           ]),
         ]),
       ]),
-      { t: "contra", title: "모순 1", text: "결국 재단 과정의 안정성을 위해서는 짧게 작업해야 하지만, 완성된 기물의 안정성을 위해서는 길게 작업해야 한다는 모순이 발생한다. 여러 번의 시행착오 속에서 마주한 가장 큰 딜레마이며, 두 조건 사이에서 적절한 균형을 찾는 것이 중요한 과제였다." },
+      { t: "contra", title: "모순 1", text: "결국 재단 과정의 안정성을 위해서는 짧게 작업해야 하지만, 완성된 기물의 안정성을 위해서는 길게 작업해야 한다는 모순이\n발생한다. 여러 번의 시행착오 속에서 마주한 가장 큰 딜레마이며, 두 조건 사이에서 적절한 균형을 찾는 것이 중요한 과제였다." },
     ]),
   },
 
@@ -187,8 +187,8 @@ export const processPages: Page[] = [
         ] },
       ]),
       col(16, [
-        col(4, [step(21, "2차 소성을 한다."), { t: "dot", px: 10, paras: ["유약을 바른 기물을 가마에서 다시 1250~1280℃ 로 구운다."] }]),
-        col(2, [step(22, "다듬는다."), { t: "dot", px: 10, paras: ["가마에서 나온 기물을 사포로 간다."] }]),
+        col(4, [step(21, "2차 소성을 한다."), { t: "dot", px: 10, left: true, paras: ["유약을 바른 기물을 가마에서 다시 1250~1280℃ 로 구운다."] }]),
+        col(2, [step(22, "다듬는다."), { t: "dot", px: 10, left: true, paras: ["가마에서 나온 기물을 사포로 간다."] }]),
         step(23, "완성 ⊹ :*"),
       ]),
       { t: "wave" },
