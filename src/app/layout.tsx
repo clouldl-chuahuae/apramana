@@ -20,6 +20,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <head>
+        {/* 390px보다 좁은 폰(갤럭시 등)은 화면 폭에 맞춰 전체를 살짝 축소 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var w=Math.min(screen.width||390,(window.outerWidth||9999));if(w&&w<390){var m=document.querySelector('meta[name="viewport"]');if(m){var s=(w/390).toFixed(4);m.setAttribute('content','width=390, initial-scale='+s+', minimum-scale='+s);}}})();`,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         {/* Alegreya(제목) + 고운돋움(산돌 연결 전 임시 한글) */}
